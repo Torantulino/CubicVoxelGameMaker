@@ -10,9 +10,8 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-        //Todo: 2 here is block type
-        texture_manager.Block_Material.SetFloat("_SliceRange", 5);
-        BlockFace b = new BlockFace(texture_manager.Block_Material, 5);
+        //Todo: 4 here is block type
+        BlockFace b = new BlockFace(texture_manager.Block_Material, 4);
     }
 
     // Update is called once per frame
