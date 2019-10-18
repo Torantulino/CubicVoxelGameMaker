@@ -53,7 +53,7 @@ public class TextureManager
             false);
 
         // Settings
-        _texture_array.wrapMode = TextureWrapMode.Repeat;
+        _texture_array.wrapMode = TextureWrapMode.Clamp;
         _texture_array.filterMode = FilterMode.Bilinear;
 
         // Iterate over textures adding pixel data to Texture Array
