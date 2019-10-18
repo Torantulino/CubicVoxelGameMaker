@@ -11,28 +11,34 @@ public class BlockFace
     {
         // Create object
         Game_Object = new GameObject("face");
+        _normal *= -1.0f;
 
         // Position
         {
-            //Down
             if (_normal == Vector3.up)
             {
                 Game_Object.transform.position += new Vector3(-0.5f, 0.0f, 0.5f);
+
+                // Rotate
+                Game_Object.transform.rotation = Quaternion.LookRotation(_normal, Vector3.back);
+
             }
-            // Up   
             else if (_normal == Vector3.down)
             {
                 Game_Object.transform.position = -_normal;
                 Game_Object.transform.position += new Vector3(-0.5f, 0.0f, -0.5f);
+
+                // Rotate
+                Game_Object.transform.rotation = Quaternion.LookRotation(_normal, Vector3.forward);
             }
             else
             {
                 Vector3 _right = (Vector3.Cross(_normal, Vector3.up));
                 Game_Object.transform.position = -_normal / 2.0f + _right / 2.0f;
+                // Rotate
+                Game_Object.transform.rotation = Quaternion.LookRotation(_normal);
             }
         }
-        // Rotate
-        Game_Object.transform.rotation = Quaternion.LookRotation(_normal);
 
         // Create Components
         MeshRenderer mesh_renderer = Game_Object.AddComponent<MeshRenderer>();
