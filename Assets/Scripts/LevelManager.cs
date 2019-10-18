@@ -5,16 +5,13 @@ using UnityEngine.U2D;
 
 public class LevelManager : MonoBehaviour
 {
-    TextureManager texture_manager = new TextureManager();
-
+    
     // Start is called before the first frame update
     void Start()
     {   
-        //Todo: 4 here is block type
-        BlockFace b = new BlockFace(
-            texture_manager.Block_Material,
-            BlockInfo.Face_Textures[(int)BlockInfo.BlockType.Sand,0]
-        );
+        Block block = new Block((int)BlockInfo.BlockType.Sand, Vector3.up);
+        Block block2 = new Block((int)BlockInfo.BlockType.Stone, Vector3.down);
+        Block block3 = new Block((int)BlockInfo.BlockType.Dirt, Vector3.left);
     }
 
     // Update is called once per frame
