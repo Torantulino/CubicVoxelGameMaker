@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockInfo : MonoBehaviour
+public static class BlockInfo
 {
     public enum BlockType
     {
@@ -15,12 +15,12 @@ public class BlockInfo : MonoBehaviour
 
     // Number of texture in atlas for each face
     // Left, Right, Front, Back, Top, Bottom
-    public int[,] Face_Textures = new int[5,6]
+    public static int[,] Face_Textures = new int[5,6]
     {
-        {0,0,0,0,0,0},
-        {1,1,1,1,0,2},
-        {2,2,2,2,2,2},
-        {3,3,3,3,3,3},
-        {4,4,4,4,4,4}
+        {0,0,0,0,0,0},  //Air
+        {1,1,1,1,0,2},  //Grass
+        {2,2,2,2,2,2},  //Dirt
+        {3,3,3,3,3,3},  //Stone
+        {4,4,4,4,4,4}   //Sand
     };
 }

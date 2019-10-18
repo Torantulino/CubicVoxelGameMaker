@@ -11,7 +11,10 @@ public class LevelManager : MonoBehaviour
     void Start()
     {   
         //Todo: 4 here is block type
-        BlockFace b = new BlockFace(texture_manager.Block_Material, 4);
+        BlockFace b = new BlockFace(
+            texture_manager.Block_Material,
+            BlockInfo.Face_Textures[(int)BlockInfo.BlockType.Sand,0]
+        );
     }
 
     // Update is called once per frame

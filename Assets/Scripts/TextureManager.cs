@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TextureManager
 {
@@ -40,6 +41,9 @@ public class TextureManager
         // //Load textures
         Texture2D[] block_textures = Resources.LoadAll<Texture2D>("Textures/Blocks/Opaque");
 
+        // Sort array based on numeric name prefix
+        block_textures = block_textures.OrderBy(s => int.Parse(s.name.Split('_')[0])).ToArray();
+
         // Create texture array
         Texture2DArray _texture_array = new Texture2DArray(
             TEXTURE_SIZE_PX,
@@ -55,7 +59,7 @@ public class TextureManager
         // Iterate over textures adding pixel data to Texture Array
         for (int i = 0; i < block_textures.Length; i++)
         {
-            //Debug.Log("Loading " + block_textures[i].name);
+            Debug.Log("Loading " + block_textures[i].name);
             Texture2D _texture = block_textures[i];
             _texture_array.SetPixels(_texture.GetPixels(0), i, 0);
         }
