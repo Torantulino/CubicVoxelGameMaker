@@ -33,6 +33,18 @@ public class TextureManager
             return block_material;
         }
     }
+    private Mesh mesh;
+    public Mesh Mesh
+    {
+        get
+        {
+            if(mesh == null)
+            {
+                mesh = new Mesh();
+            }
+            return mesh;
+        }
+    }
 
     // Creates a TextureArray (Only works on modern GPUs) which appears 
     // to the GPU as a single object and uses a single drawcall

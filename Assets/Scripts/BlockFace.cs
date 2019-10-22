@@ -7,7 +7,7 @@ public class BlockFace
     private int size = 1;
     public GameObject Game_Object;
 
-    public BlockFace(Material _material, int _type, Vector3 _normal)
+    public BlockFace(Material _material, int _type, Vector3 _normal, Mesh _mesh)
     {
         // Create object
         Game_Object = new GameObject("face");
@@ -42,12 +42,10 @@ public class BlockFace
 
         // Create Components
         MeshRenderer mesh_renderer = Game_Object.AddComponent<MeshRenderer>();
-        MeshFilter mesh_filter = Game_Object.AddComponent<MeshFilter>();
-        mesh_renderer.material = _material;
-
+        mesh_renderer.sharedMaterial = _material;
         
-        Mesh mesh = new Mesh();
-        mesh_filter.mesh = mesh;
+        MeshFilter mesh_filter = Game_Object.AddComponent<MeshFilter>();
+        mesh_filter.mesh = _mesh;
 
         // Set vertices
         Vector3[] vertices = new Vector3[4]
@@ -57,7 +55,7 @@ public class BlockFace
             new Vector3(0.0f, size, 0.0f),
             new Vector3(size, size, 0.0f)
         };
-        mesh.vertices = vertices;
+        mesh_filter.mesh.vertices = vertices;
 
         // Construct triangles
         int[] tris = new int[6]
@@ -67,7 +65,7 @@ public class BlockFace
             // Upper Right
             2, 3, 1
         };
-        mesh.triangles = tris;
+        mesh_filter.mesh.triangles = tris;
 
         // Todo: investiage
         Vector3[] normals = new Vector3[4]
@@ -77,7 +75,7 @@ public class BlockFace
             Vector3.back,
             Vector3.back
         };
-        mesh.normals = normals;
+        mesh_filter.mesh.normals = normals;
 
         // Set UVs, with third coordinate indicating index within texture atlas
         List<Vector3> uv = new List<Vector3>
@@ -87,6 +85,6 @@ public class BlockFace
             new Vector3(0.0f, 1.0f, _type),
             new Vector3(1.0f, 1.0f, _type)
         };
-        mesh.SetUVs(0, uv);
+        mesh_filter.mesh.SetUVs(0, uv);
     }
 }

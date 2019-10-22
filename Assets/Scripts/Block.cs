@@ -21,12 +21,13 @@ public class Block
         Game_Object = new GameObject("Block");
 
         // Create faces
-        for (int i=0; i<6; i++)
+        for (int i = 0; i < 6; i++)
         {
             BlockFace _face = new BlockFace(
                 texture_manager.Block_Material,
                 BlockInfo.Face_Textures[_type, i],
-                BlockInfo.normals[i]
+                BlockInfo.normals[i],
+                texture_manager.Mesh
             );
             // Set face properties
             _face.Game_Object.transform.parent = Game_Object.transform;
