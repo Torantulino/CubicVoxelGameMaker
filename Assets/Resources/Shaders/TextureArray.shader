@@ -5,8 +5,6 @@ Shader "Custom/Sample2DArrayTexture"
 	Properties
 	{
 		_TexArr("Texture", 2DArray) = "" {}
-		_SliceRange("Slices", int) = 0
-		_UVScale("UVScale", Float) = 1.0
 	}
 	SubShader
 	{
@@ -32,9 +30,6 @@ Shader "Custom/Sample2DArrayTexture"
 				float3 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
 			};
-
-			float _SliceRange;
-			float _UVScale;
 
 			// Vertex Shader
 			// Called once for each vertex
