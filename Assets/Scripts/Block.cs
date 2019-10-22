@@ -1,10 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Block
 {
-    TextureManager texture_manager = new TextureManager();
     public int type;
     public bool hitboxEnabled;
 
@@ -19,7 +18,7 @@ public class Block
         hitboxEnabled = _hitboxEnabled;
         
         // Create GameObject
-        GameObject Game_Object = new GameObject("Block");
+        Game_Object = new GameObject("Block");
 
         // Create faces
         for (int i=0; i<6; i++)
