@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,17 +10,9 @@ public class Block
 
     public GameObject Game_Object;
     public BlockFace[] Faces = new BlockFace[6];
-    private Vector3[] normals = new Vector3[6]
-    {
-        Vector3.left,
-        Vector3.right,
-        Vector3.forward,
-        Vector3.back,
-        Vector3.up,
-        Vector3.down
-    };
 
-    public Block(int _type, Vector3 _pos, bool _hitboxEnabled = true)
+
+    public Block(int _type, Vector3 _pos, TextureManager texture_manager, bool _hitboxEnabled = true)
     {
         // Set properties
         type = _type;
@@ -32,14 +24,15 @@ public class Block
         // Create faces
         for (int i=0; i<6; i++)
         {
-            BlockFace b = new BlockFace(
+            BlockFace _face = new BlockFace(
                 texture_manager.Block_Material,
                 BlockInfo.Face_Textures[_type, i],
-                normals[i]
+                BlockInfo.normals[i]
             );
-            b.Game_Object.transform.parent = Game_Object.transform;
-            b.Game_Object.name = "Face_" + i;
-            Faces[i] = b;
+            // Set face properties
+            _face.Game_Object.transform.parent = Game_Object.transform;
+            _face.Game_Object.name = "Face_" + i;
+            Faces[i] = _face;
         }
         // Set object positions
         Game_Object.transform.position = _pos;

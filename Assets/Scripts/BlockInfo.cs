@@ -14,7 +14,7 @@ public static class BlockInfo
     }
 
     // Number of texture in atlas for each face
-    // Left, Right, Front, Back, Top, Bottom
+    // X, -X, Z, -Z, Y, -Y 
     public static int[,] Face_Textures = new int[5,6]
     {
         {0,0,0,0,0,0},  //Air
@@ -22,5 +22,15 @@ public static class BlockInfo
         {2,2,2,2,2,2},  //Dirt
         {3,3,3,3,3,3},  //Stone
         {4,4,4,4,4,4}   //Sand
+    };
+
+    public static Vector3[] normals = new Vector3[6]
+    {
+        Vector3.right,
+        Vector3.left,
+        Vector3.forward,
+        Vector3.back,
+        Vector3.up,
+        Vector3.down
     };
 }
