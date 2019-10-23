@@ -10,12 +10,13 @@ public class World
     public static int WORLD_HEIGHT = 64;
     public static int SEA_LEVEL = 32;
 
+    public static float NOISE_SCALE = 0.033f;
+
     ChunkManager chunk_manager = new ChunkManager();
 
-
-    public void CreateChunk(int _type, Vector2Int _chunk_pos)
+    public void CreateChunk(Vector2Int _chunk_pos)
     {
-        chunk_manager.CreateChunk(_type, _chunk_pos);
+        chunk_manager.CreateChunk(_chunk_pos);
     }
 
     public void UpdateWorld()
