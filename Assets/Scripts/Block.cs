@@ -12,12 +12,18 @@ public class Block
 
     public Block(int _type, Vector3 _pos, bool _hitboxEnabled = true)
     {
-        // Obtain references
-        LevelManager level_manager = GameObject.FindObjectOfType<LevelManager>();
-
         // Set properties
         type = _type;
         hitboxEnabled = _hitboxEnabled;
+        
+        if(_type == (int)BlockInfo.BlockType.Air)
+        {
+            hitboxEnabled = false;
+            return;
+        }
+        // Obtain references
+        LevelManager level_manager = GameObject.FindObjectOfType<LevelManager>();
+
         
         // Create GameObject
         Game_Object = new GameObject("Block");

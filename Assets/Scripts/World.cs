@@ -8,6 +8,8 @@ public class World
 {
     public static int CHUNK_SIZE = 16;
     public static int WORLD_HEIGHT = 64;
+    public static int SEA_LEVEL = 32;
+
     ChunkManager chunk_manager = new ChunkManager();
 
 
@@ -39,23 +41,43 @@ public class World
                     try
                     {
                         // X
-                        if (x + 1 != CHUNK_SIZE && _chunk.blocks[x + 1, y, z].Game_Object != null)
+                        if (x + 1 != CHUNK_SIZE && _chunk.blocks[x + 1, y, z].Game_Object != null
+                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
+                        {
                             _chunk.blocks[x + 1, y, z].Faces[1].Game_Object.SetActive(false);
+                        }
                         // -X 
-                        if (x != 0 && _chunk.blocks[x - 1, y, z].Game_Object != null)
+                        if (x != 0 && _chunk.blocks[x - 1, y, z].Game_Object != null 
+                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
+                        {
                             _chunk.blocks[x - 1, y, z].Faces[0].Game_Object.SetActive(false);
+                        }
                         // Z
-                        if (z + 1 != CHUNK_SIZE && _chunk.blocks[x, y, z + 1].Game_Object != null)
+                        if (z + 1 != CHUNK_SIZE && _chunk.blocks[x, y, z + 1].Game_Object != null
+                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
+                        {
                             _chunk.blocks[x, y, z + 1].Faces[3].Game_Object.SetActive(false);
+                        }
                         // -Z 
-                        if (z != 0 && _chunk.blocks[x, y, z - 1].Game_Object != null)
+                        if (z != 0 && _chunk.blocks[x, y, z - 1].Game_Object != null
+                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
+                        {
                             _chunk.blocks[x, y, z - 1].Faces[2].Game_Object.SetActive(false);
+                        }
                         // Y
-                        if (y + 1 != WORLD_HEIGHT && _chunk.blocks[x, y + 1, z].Game_Object != null)
+                        if (y + 1 != WORLD_HEIGHT && _chunk.blocks[x, y + 1, z].Game_Object != null
+                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
+                        {
+                            // Bottom
                             _chunk.blocks[x, y + 1, z].Faces[5].Game_Object.SetActive(false);
+                        }
                         // -Y 
-                        if (y != 0 && _chunk.blocks[x, y - 1, z].Game_Object != null)
+                        if (y != 0 && _chunk.blocks[x, y - 1, z].Game_Object != null
+                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
+                        {
+                            // Top
                             _chunk.blocks[x, y - 1, z].Faces[4].Game_Object.SetActive(false);
+                        }
                     }
                     catch (System.IndexOutOfRangeException)
                     {
@@ -79,6 +101,10 @@ public class World
         int current_mesh = 0;
         foreach (Block block in _chunk.blocks)
         {
+            // Disregard Air
+            if(block.type == (int)BlockInfo.BlockType.Air)
+                continue;
+
             // Get all active face mesh filters
             MeshFilter[] mesh_filters = block.Game_Object.GetComponentsInChildren<MeshFilter>();
 
