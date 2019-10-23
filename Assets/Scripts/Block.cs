@@ -10,9 +10,11 @@ public class Block
     public GameObject Game_Object;
     public BlockFace[] Faces = new BlockFace[6];
 
-
-    public Block(int _type, Vector3 _pos, TextureManager texture_manager, bool _hitboxEnabled = true)
+    public Block(int _type, Vector3 _pos, bool _hitboxEnabled = true)
     {
+        // Obtain references
+        LevelManager level_manager = GameObject.FindObjectOfType<LevelManager>();
+
         // Set properties
         type = _type;
         hitboxEnabled = _hitboxEnabled;
@@ -24,10 +26,10 @@ public class Block
         for (int i = 0; i < 6; i++)
         {
             BlockFace _face = new BlockFace(
-                texture_manager.Block_Material,
+                level_manager.Texture_Manager.Block_Material,
                 BlockInfo.Face_Textures[_type, i],
                 BlockInfo.normals[i],
-                texture_manager.Mesh
+                level_manager.Texture_Manager.Mesh
             );
             // Set face properties
             _face.Game_Object.transform.parent = Game_Object.transform;

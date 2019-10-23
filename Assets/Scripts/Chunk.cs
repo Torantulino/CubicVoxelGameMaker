@@ -8,7 +8,7 @@ public class Chunk
     public Block[,,] blocks = 
         new Block[World.CHUNK_SIZE, World.WORLD_HEIGHT, World.CHUNK_SIZE];
 
-    public Chunk(TextureManager texture_manager)
+    public Chunk()
     {
         for (int i = 0; i < World.CHUNK_SIZE; i++)
         {
@@ -16,7 +16,8 @@ public class Chunk
             {
                 for (int k = 0; k < World.CHUNK_SIZE; k++)
                 {
-                    Block b = new Block((int)BlockInfo.BlockType.Grass, new Vector3(i,j,k), texture_manager);
+                    Block b = new Block((int)BlockInfo.BlockType.Grass,
+                        new Vector3(i,j,k));
                     blocks[i,j,k] = b;
                 }
             }

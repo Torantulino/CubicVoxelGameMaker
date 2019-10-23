@@ -5,11 +5,20 @@ using UnityEngine.U2D;
 
 public class LevelManager : MonoBehaviour
 {
+
+    public TextureManager Texture_Manager;
+
+    public ChunkManager Chunk_Manager;
+
     World world;
     // Start is called before the first frame update
     void Start()
     {   
+        // Create managers
+        Texture_Manager = new TextureManager();
+        Chunk_Manager = new ChunkManager();
         world = new World();
+
         world.CreateChunk((int)BlockInfo.BlockType.Grass, new Vector2Int(0,0), this);
     }
 
