@@ -19,7 +19,14 @@ public class LevelManager : MonoBehaviour
         Chunk_Manager = new ChunkManager();
         world = new World();
 
-        world.CreateChunk(new Vector2Int(0,0));
+
+        for(int x = 0; x < 2; x++)
+        {
+            for (int z = 0; z < 2; z++)
+            {
+                world.CreateChunk(new Vector2Int(x, z));
+            }
+        }
     }
 
     // Update is called once per frame
