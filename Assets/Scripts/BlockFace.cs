@@ -4,58 +4,91 @@ using UnityEngine;
 
 public class BlockFace
 {
-    private int size = 1;
-    public GameObject Game_Object;
+    public Mesh Mesh;
 
-    public BlockFace(Material _material, int _type, Vector3 _normal, Mesh _mesh)
+    Vector3[] vertices = new Vector3[8]
     {
-        // Create object
-        Game_Object = new GameObject("face");
-        _normal *= -1.0f;
+            new Vector3(0.0f, 0.0f, 0.0f), //0
+            new Vector3(1.0f, 0.0f, 0.0f), //1
+            new Vector3(0.0f, 1.0f, 0.0f), //2
+            new Vector3(1.0f, 1.0f, 0.0f), //3
+            new Vector3(0.0f, 0.0f, 1.0f), //4
+            new Vector3(1.0f, 0.0f, 1.0f), //5
+            new Vector3(0.0f, 1.0f, 1.0f), //6
+            new Vector3(1.0f, 1.0f, 1.0f)  //7
+    };
 
+    public BlockFace(Material _material, int _type, Vector3 _normal)
+    {
         // Position
-        {
-            if (_normal == Vector3.up)
-            {
-                Game_Object.transform.position += new Vector3(-0.5f, 0.0f, 0.5f);
-
-                // Rotate
-                Game_Object.transform.rotation = Quaternion.LookRotation(_normal, Vector3.back);
-
-            }
-            else if (_normal == Vector3.down)
-            {
-                Game_Object.transform.position = -_normal;
-                Game_Object.transform.position += new Vector3(-0.5f, 0.0f, -0.5f);
-
-                // Rotate
-                Game_Object.transform.rotation = Quaternion.LookRotation(_normal, Vector3.forward);
-            }
-            else
-            {
-                Vector3 _right = (Vector3.Cross(_normal, Vector3.up));
-                Game_Object.transform.position = -_normal / 2.0f + _right / 2.0f;
-                // Rotate
-                Game_Object.transform.rotation = Quaternion.LookRotation(_normal);
-            }
-        }
-
-        // Create Components
-        MeshRenderer mesh_renderer = Game_Object.AddComponent<MeshRenderer>();
-        mesh_renderer.sharedMaterial = _material;
-        
-        MeshFilter mesh_filter = Game_Object.AddComponent<MeshFilter>();
-        mesh_filter.mesh = _mesh;
 
         // Set vertices
-        Vector3[] vertices = new Vector3[4]
+        // RIGHT
+        if(_normal == Vector3.right)
         {
-            new Vector3(0.0f, 0.0f, 0.0f),
-            new Vector3(size, 0.0f, 0.0f),
-            new Vector3(0.0f, size, 0.0f),
-            new Vector3(size, size, 0.0f)
-        };
-        mesh_filter.mesh.vertices = vertices;
+            Mesh.vertices = new Vector3[4]
+            {
+            vertices[1],
+            vertices[5],
+            vertices[7],
+            vertices[3]
+            };
+        }
+        // LEFT
+        else if(_normal == Vector3.left)
+        {
+            Mesh.vertices = new Vector3[4]
+            {
+            vertices[0],
+            vertices[2],
+            vertices[6],
+            vertices[4]
+            };
+        }
+        // FORWARD
+        else if(_normal == Vector3.forward)
+        {
+            Mesh.vertices = new Vector3[4]
+            {
+            vertices[5],
+            vertices[4],
+            vertices[6],
+            vertices[7]
+            };
+        }        
+        // BACK
+        else if(_normal == Vector3.back)
+        {
+            Mesh.vertices = new Vector3[4]
+            {
+            vertices[0],
+            vertices[1],
+            vertices[3],
+            vertices[2]
+            };
+        }
+        // UP
+        else if(_normal == Vector3.up)
+        {
+            Mesh.vertices = new Vector3[4]
+            {
+            vertices[2],
+            vertices[3],
+            vertices[7],
+            vertices[6]
+            };
+        }
+        // Down
+        else if(_normal == Vector3.down)
+        {
+            Mesh.vertices = new Vector3[4]
+            {
+            vertices[4],
+            vertices[5],
+            vertices[1],
+            vertices[0]
+            };
+        }
 
         // Construct triangles
         int[] tris = new int[6]
@@ -65,7 +98,7 @@ public class BlockFace
             // Upper Right
             2, 3, 1
         };
-        mesh_filter.mesh.triangles = tris;
+        Mesh.triangles = tris;
 
         // Todo: investiage
         Vector3[] normals = new Vector3[4]
@@ -75,7 +108,7 @@ public class BlockFace
             Vector3.back,
             Vector3.back
         };
-        mesh_filter.mesh.normals = normals;
+        Mesh.normals = normals;
 
         // Set UVs, with third coordinate indicating index within texture atlas
         List<Vector3> uv = new List<Vector3>
@@ -85,6 +118,6 @@ public class BlockFace
             new Vector3(0.0f, 1.0f, _type),
             new Vector3(1.0f, 1.0f, _type)
         };
-        mesh_filter.mesh.SetUVs(0, uv);
+        Mesh.SetUVs(0, uv);
     }
 }
