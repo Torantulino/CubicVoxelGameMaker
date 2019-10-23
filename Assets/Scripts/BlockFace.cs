@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class BlockFace
 {
-    public Mesh Mesh;
+    public bool Render = true;
+    public Mesh mesh = new Mesh();
 
     Vector3[] vertices = new Vector3[8]
     {
@@ -26,7 +27,7 @@ public class BlockFace
         // RIGHT
         if(_normal == Vector3.right)
         {
-            Mesh.vertices = new Vector3[4]
+            mesh.vertices = new Vector3[4]
             {
             vertices[1],
             vertices[5],
@@ -37,7 +38,7 @@ public class BlockFace
         // LEFT
         else if(_normal == Vector3.left)
         {
-            Mesh.vertices = new Vector3[4]
+            mesh.vertices = new Vector3[4]
             {
             vertices[0],
             vertices[2],
@@ -48,7 +49,7 @@ public class BlockFace
         // FORWARD
         else if(_normal == Vector3.forward)
         {
-            Mesh.vertices = new Vector3[4]
+            mesh.vertices = new Vector3[4]
             {
             vertices[5],
             vertices[4],
@@ -59,7 +60,7 @@ public class BlockFace
         // BACK
         else if(_normal == Vector3.back)
         {
-            Mesh.vertices = new Vector3[4]
+            mesh.vertices = new Vector3[4]
             {
             vertices[0],
             vertices[1],
@@ -70,7 +71,7 @@ public class BlockFace
         // UP
         else if(_normal == Vector3.up)
         {
-            Mesh.vertices = new Vector3[4]
+            mesh.vertices = new Vector3[4]
             {
             vertices[2],
             vertices[3],
@@ -81,7 +82,7 @@ public class BlockFace
         // Down
         else if(_normal == Vector3.down)
         {
-            Mesh.vertices = new Vector3[4]
+            mesh.vertices = new Vector3[4]
             {
             vertices[4],
             vertices[5],
@@ -91,16 +92,17 @@ public class BlockFace
         }
 
         // Construct triangles
+        //TODO: counter clockwise or clockwise?
         int[] tris = new int[6]
         {
             // Lower Left
             0, 2, 1,
             // Upper Right
-            2, 3, 1
+            0, 3, 2
         };
-        Mesh.triangles = tris;
+        mesh.triangles = tris;
 
-        // Todo: investiage
+        //TODO: investiage
         Vector3[] normals = new Vector3[4]
         {
             Vector3.back,
@@ -108,7 +110,7 @@ public class BlockFace
             Vector3.back,
             Vector3.back
         };
-        Mesh.normals = normals;
+        mesh.normals = normals;
 
         // Set UVs, with third coordinate indicating index within texture atlas
         List<Vector3> uv = new List<Vector3>
@@ -118,6 +120,6 @@ public class BlockFace
             new Vector3(0.0f, 1.0f, _type),
             new Vector3(1.0f, 1.0f, _type)
         };
-        Mesh.SetUVs(0, uv);
+        mesh.SetUVs(0, uv);
     }
 }

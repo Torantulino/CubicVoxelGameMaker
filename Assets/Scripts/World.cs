@@ -45,39 +45,39 @@ public class World
                         if (x + 1 != CHUNK_SIZE && _chunk.blocks[x + 1, y, z].Game_Object != null
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x + 1, y, z].Faces[1].Game_Object.SetActive(false);
+                            _chunk.blocks[x + 1, y, z].Faces[1].Render = false;
                         }
                         // -X 
                         if (x != 0 && _chunk.blocks[x - 1, y, z].Game_Object != null 
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x - 1, y, z].Faces[0].Game_Object.SetActive(false);
+                            _chunk.blocks[x - 1, y, z].Faces[0].Render = false;
                         }
                         // Z
                         if (z + 1 != CHUNK_SIZE && _chunk.blocks[x, y, z + 1].Game_Object != null
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x, y, z + 1].Faces[3].Game_Object.SetActive(false);
+                            _chunk.blocks[x, y, z + 1].Faces[3].Render = false;
                         }
                         // -Z 
                         if (z != 0 && _chunk.blocks[x, y, z - 1].Game_Object != null
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x, y, z - 1].Faces[2].Game_Object.SetActive(false);
+                            _chunk.blocks[x, y, z - 1].Faces[2].Render = false;
                         }
                         // Y
                         if (y + 1 != WORLD_HEIGHT && _chunk.blocks[x, y + 1, z].Game_Object != null
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             // Bottom
-                            _chunk.blocks[x, y + 1, z].Faces[5].Game_Object.SetActive(false);
+                            _chunk.blocks[x, y + 1, z].Faces[5].Render = false;
                         }
                         // -Y 
                         if (y != 0 && _chunk.blocks[x, y - 1, z].Game_Object != null
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             // Top
-                            _chunk.blocks[x, y - 1, z].Faces[4].Game_Object.SetActive(false);
+                            _chunk.blocks[x, y - 1, z].Faces[4].Render = false;
                         }
                     }
                     catch (System.IndexOutOfRangeException)
@@ -97,7 +97,7 @@ public class World
         // Obtain references
         LevelManager level_manager = GameObject.FindObjectOfType<LevelManager>();
 
-        CombineInstance[] combine_meshes = new CombineInstance[_chunk.blocks.Length];
+        CombineInstance[] combine_meshes = new CombineInstance[_chunk.blocks.Length * 6];
 
         int current_mesh = 0;
         foreach (Block block in _chunk.blocks)
@@ -106,19 +106,18 @@ public class World
             if(block.type == (int)BlockInfo.BlockType.Air)
                 continue;
 
-            // Get all active face mesh filters
-            MeshFilter[] mesh_filters = block.Game_Object.GetComponentsInChildren<MeshFilter>();
-
-            for (int i = 0; i < mesh_filters.Length; i++)
+            for (int i = 0; i < block.Faces.Length; i++)
             {
-                combine_meshes[current_mesh].mesh = mesh_filters[i].mesh;
-                combine_meshes[current_mesh].transform = mesh_filters[i].transform.localToWorldMatrix;
-                current_mesh++;
-            }
+                if(!block.Faces[i].Render)
+                    continue;
 
-            // Set all faces to inactive
-            for (int i = 0; i < 6; i++)
-                block.Game_Object.transform.GetChild(i).gameObject.SetActive(false);
+                combine_meshes[current_mesh].mesh = block.Faces[i].mesh;
+                combine_meshes[current_mesh].transform = block.Game_Object.transform.localToWorldMatrix;
+                current_mesh++;
+
+                // Set face to not render TODO: REMOVE
+                block.Faces[i].Render = false;
+            }
         }
 
         MeshRenderer mesh_renderer = _chunk.Game_Object.AddComponent<MeshRenderer>();

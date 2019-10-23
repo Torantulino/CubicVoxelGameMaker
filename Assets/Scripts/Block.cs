@@ -8,7 +8,10 @@ public class Block
     public bool hitboxEnabled;
 
     public GameObject Game_Object;
+
     public BlockFace[] Faces = new BlockFace[6];
+
+
 
     public Block(int _type, Vector3 _pos, bool _hitboxEnabled = true)
     {
@@ -34,12 +37,8 @@ public class Block
             BlockFace _face = new BlockFace(
                 level_manager.Texture_Manager.Block_Material,
                 BlockInfo.Face_Textures[_type, i],
-                BlockInfo.normals[i],
-                level_manager.Texture_Manager.Mesh
+                BlockInfo.normals[i]
             );
-            // Set face properties
-            _face.Game_Object.transform.parent = Game_Object.transform;
-            _face.Game_Object.name = "Face_" + i;
             Faces[i] = _face;
         }
         // Set object positions
