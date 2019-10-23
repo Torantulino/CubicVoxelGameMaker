@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Chunk
 {
-    public bool hasLoaded = false;
+    public bool has_loaded = false;
+    public bool needs_updating = true;
+    
+    public GameObject Game_Object = new GameObject("Chunk");
+
     public Block[,,] blocks = 
         new Block[World.CHUNK_SIZE, World.WORLD_HEIGHT, World.CHUNK_SIZE];
 
@@ -23,6 +27,6 @@ public class Chunk
             }
         }
 
-        hasLoaded = true;
+        has_loaded = true;
     }
 }
