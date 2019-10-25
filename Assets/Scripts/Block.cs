@@ -5,7 +5,7 @@ using UnityEngine;
 public class Block
 {
     public int type = (int)BlockInfo.BlockType.Air;
-    public bool hitboxEnabled;
+    public bool hitboxEnabled;  //TODO: Use inheritance to remove unncessary variables from standard blocks?
     public BlockFace[] Faces = new BlockFace[6];
     public Vector3 Position;
 
@@ -22,14 +22,12 @@ public class Block
             hitboxEnabled = false;
             return;
         }
-        // Obtain references
-        LevelManager level_manager = GameObject.FindObjectOfType<LevelManager>();
 
         // Create faces
         for (int i = 0; i < 6; i++)
         {
             BlockFace _face = new BlockFace(
-                level_manager.Texture_Manager.Block_Material,
+                TextureManager.Block_Material,
                 BlockInfo.Face_Textures[_type, i],
                 BlockInfo.normals[i]
             );

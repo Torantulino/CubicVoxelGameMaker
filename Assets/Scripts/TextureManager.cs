@@ -8,8 +8,8 @@ public class TextureManager
     public static int TEXTURE_SIZE_PX = 16;
 
     private Texture2D[] block_textures;
-    private Texture2DArray texture_array;
-    private Texture2DArray Texture_Array
+    private static Texture2DArray texture_array;
+    private static Texture2DArray Texture_Array
     {
         get
         {
@@ -20,8 +20,8 @@ public class TextureManager
             return texture_array;
         }
     }
-    private Material block_material;
-    public Material Block_Material
+    private static Material block_material;
+    public static Material Block_Material
     {
         get
         {
@@ -48,7 +48,7 @@ public class TextureManager
 
     // Creates a TextureArray (Only works on modern GPUs) which appears 
     // to the GPU as a single object and uses a single drawcall
-    public Texture2DArray CreateTextureArray()
+    private static Texture2DArray CreateTextureArray()
     {
         // //Load textures
         Texture2D[] block_textures = Resources.LoadAll<Texture2D>("Textures/Blocks/Opaque");
