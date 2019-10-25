@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -139,14 +139,35 @@ public class World
             }
         }
 
+        GameObject chunk_object;
+        MeshRenderer mesh_renderer;
+        MeshFilter mesh_filter;
+
+        // If Chunk is loaded, update
+        if(chunk_manager.LoadedChunks.Contains(_chunk.Position))
+        {
+            // Get Gameobject
+            chunk_object = chunk_manager.Chunk_GameObjects[_chunk.Position];
+            // Get Components
+            mesh_renderer = chunk_manager.Chunk_GameObjects[_chunk.Position].GetComponent<MeshRenderer>();
+            mesh_filter = chunk_manager.Chunk_GameObjects[_chunk.Position].GetComponent<MeshFilter>();
+
+            // Delete old mesh
+            UnityEngine.Object.Destroy(mesh_filter.mesh);
+        }
+        // Else create
+        else
+        {
         // Create Gameobject
-        GameObject chunk_object = new GameObject("Chunk");
+            chunk_object = new GameObject("Chunk");
+            // Add Components
+            mesh_renderer = chunk_object.AddComponent<MeshRenderer>();
+            mesh_filter = chunk_object.AddComponent<MeshFilter>();
+        }
+
         // Position
         chunk_object.transform.position = new Vector3(_chunk.Position.x * World.CHUNK_SIZE, 0.0f, _chunk.Position.y * World.CHUNK_SIZE);
 
-        // Add Components
-        MeshRenderer mesh_renderer = chunk_object.AddComponent<MeshRenderer>();
-        MeshFilter mesh_filter = chunk_object.AddComponent<MeshFilter>();
 
         // Combine meshes into single mesh
         mesh_filter.mesh = new Mesh();

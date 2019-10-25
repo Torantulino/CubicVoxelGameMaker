@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
@@ -10,6 +10,7 @@ public class ChunkManager
 {
     public readonly ConcurrentDictionary<Vector2Int, Chunk> Chunks = new ConcurrentDictionary<Vector2Int, Chunk>();
     public HashSet<Vector2Int> LoadedChunks = new HashSet<Vector2Int>();
+    public ConcurrentDictionary<Vector2Int, GameObject> Chunk_GameObjects = new ConcurrentDictionary<Vector2Int, GameObject>();
     
     // Loads and Unloads chunks as needed
     public void UpdateChunks()
