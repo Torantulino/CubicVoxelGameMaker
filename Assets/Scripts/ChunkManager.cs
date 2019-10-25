@@ -7,15 +7,15 @@ using UnityEngine;
 public class ChunkManager
 {
 
-    public Dictionary<Vector2Int, Chunk> Chunks = new Dictionary<Vector2Int, Chunk>();
+    public readonly Dictionary<Vector2Int, Chunk> Chunks = new Dictionary<Vector2Int, Chunk>();
 
     public void CreateChunk(Vector2Int _chunk_pos)
     {
         LoadChunk loadChunk = new LoadChunk();
-        loadChunk.chunk_pos = _chunk_pos; 
+        loadChunk.chunk_pos = _chunk_pos;
         loadChunk.chunk_manager = this; 
         
-        loadChunk.Execute();
+        loadChunk.Execute(); //TODO: Not starting job
     }
 }
 
@@ -23,6 +23,7 @@ public struct LoadChunk : IJob
 {
     public Vector2Int chunk_pos;
     public ChunkManager chunk_manager;
+
     public void Execute()
     {
         Chunk _chunk = new Chunk(chunk_pos);
