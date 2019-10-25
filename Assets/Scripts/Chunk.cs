@@ -38,12 +38,12 @@ public class Chunk
                     else if(y == height)
                         block_type = (int)BlockInfo.BlockType.Grass;
                     // Dirt
-                    else if(y > height - Random.Range(3,6))
+                    else if(y > height - World.random.Next(3, 6)) // Random.Range(3,6))
                         block_type = (int)BlockInfo.BlockType.Dirt;
                     // Stone & Dirt
                     else
                     {
-                        if(Random.value <= 0.7)
+                        if(World.random.Next(0, 100) <= 70)
                             block_type = (int)BlockInfo.BlockType.Stone;
                         else
                             block_type = (int)BlockInfo.BlockType.Dirt;

@@ -3,31 +3,24 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
+using System.Threading;
+using System.Collections.Concurrent;
 
 public class ChunkManager
 {
 
-    public readonly Dictionary<Vector2Int, Chunk> Chunks = new Dictionary<Vector2Int, Chunk>();
+    public readonly ConcurrentDictionary<Vector2Int, Chunk> Chunks = new ConcurrentDictionary<Vector2Int, Chunk>();
 
     public void CreateChunk(Vector2Int _chunk_pos)
     {
-        LoadChunk loadChunk = new LoadChunk();
-        loadChunk.chunk_pos = _chunk_pos;
-        loadChunk.chunk_manager = this; 
-        
-        loadChunk.Execute(); //TODO: Not starting job
+        Thread thread_load_chunk = new Thread(() => LoadChunk(_chunk_pos));
+        thread_load_chunk.Start();
     }
-}
 
-public struct LoadChunk : IJob
-{
-    public Vector2Int chunk_pos;
-    public ChunkManager chunk_manager;
-
-    public void Execute()
+    public void LoadChunk(Vector2Int chunk_pos)
     {
         Chunk _chunk = new Chunk(chunk_pos);
 
-        chunk_manager.Chunks[new Vector2Int(chunk_pos.x, chunk_pos.y)] = _chunk; 
+        Chunks[new Vector2Int(chunk_pos.x, chunk_pos.y)] = _chunk; 
     }
 }
