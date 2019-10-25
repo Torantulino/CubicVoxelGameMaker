@@ -29,10 +29,10 @@ public class BlockFace
         {
             mesh.vertices = new Vector3[4]
             {
-            vertices[1],
-            vertices[5],
-            vertices[7],
-            vertices[3]
+                vertices[1],
+                vertices[5],
+                vertices[7],
+                vertices[3]
             };
         }
         // LEFT
@@ -40,10 +40,10 @@ public class BlockFace
         {
             mesh.vertices = new Vector3[4]
             {
-            vertices[0],
-            vertices[2],
-            vertices[6],
-            vertices[4]
+                vertices[4],
+                vertices[0],
+                vertices[2],
+                vertices[6]
             };
         }
         // FORWARD
@@ -51,10 +51,10 @@ public class BlockFace
         {
             mesh.vertices = new Vector3[4]
             {
-            vertices[5],
-            vertices[4],
-            vertices[6],
-            vertices[7]
+                vertices[5],
+                vertices[4],
+                vertices[6],
+                vertices[7]
             };
         }        
         // BACK
@@ -62,10 +62,10 @@ public class BlockFace
         {
             mesh.vertices = new Vector3[4]
             {
-            vertices[0],
-            vertices[1],
-            vertices[3],
-            vertices[2]
+                vertices[0],
+                vertices[1],
+                vertices[3],
+                vertices[2]
             };
         }
         // UP
@@ -73,21 +73,21 @@ public class BlockFace
         {
             mesh.vertices = new Vector3[4]
             {
-            vertices[2],
-            vertices[3],
-            vertices[7],
-            vertices[6]
+                vertices[2],
+                vertices[3],
+                vertices[7],
+                vertices[6]
             };
         }
         // Down
-        else if(_normal == Vector3.down)
+        else if (_normal == Vector3.down)
         {
             mesh.vertices = new Vector3[4]
             {
-            vertices[4],
-            vertices[5],
-            vertices[1],
-            vertices[0]
+                vertices[4],
+                vertices[5],
+                vertices[1],
+                vertices[0]
             };
         }
 
@@ -96,9 +96,9 @@ public class BlockFace
         int[] tris = new int[6]
         {
             // Lower Left
-            0, 2, 1,
+            0, 3, 1,
             // Upper Right
-            0, 3, 2
+            1, 3, 2
         };
         mesh.triangles = tris;
 
@@ -117,8 +117,8 @@ public class BlockFace
         {
             new Vector3(0.0f, 0.0f, _type),
             new Vector3(1.0f, 0.0f, _type),
-            new Vector3(0.0f, 1.0f, _type),
-            new Vector3(1.0f, 1.0f, _type)
+            new Vector3(1.0f, 1.0f, _type),
+            new Vector3(0.0f, 1.0f, _type)
         };
         mesh.SetUVs(0, uv);
     }
