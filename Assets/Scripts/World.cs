@@ -15,9 +15,9 @@ public class World
 
     ChunkManager chunk_manager = new ChunkManager();
 
-    public void CreateChunk(Vector2Int _chunk_pos)
+    public void GetChunk(Vector2Int _chunk_pos)
     {
-        chunk_manager.CreateChunk(_chunk_pos);
+        chunk_manager.LoadChunk(_chunk_pos);
     }
 
     public void UpdateWorld()

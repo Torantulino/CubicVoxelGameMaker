@@ -8,16 +8,15 @@ using System.Collections.Concurrent;
 
 public class ChunkManager
 {
-
     public readonly ConcurrentDictionary<Vector2Int, Chunk> Chunks = new ConcurrentDictionary<Vector2Int, Chunk>();
 
-    public void CreateChunk(Vector2Int _chunk_pos)
+    public void LoadChunk(Vector2Int _chunk_pos)
     {
-        Thread thread_load_chunk = new Thread(() => LoadChunk(_chunk_pos));
-        thread_load_chunk.Start();
+        Thread thread_generate_chunk = new Thread(() => GenerateChunk(_chunk_pos));
+        thread_generate_chunk.Start();
     }
 
-    public void LoadChunk(Vector2Int chunk_pos)
+    private void GenerateChunk(Vector2Int chunk_pos)
     {
         Chunk _chunk = new Chunk(chunk_pos);
 

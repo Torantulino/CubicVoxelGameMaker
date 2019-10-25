@@ -25,11 +25,11 @@ public class LevelManager : MonoBehaviour
         world = new World();
 
 
-        for(int x = 0; x < 8; x++)
+        for(int x = 0; x < 4; x++)
         {
-            for (int z = 0; z < 8; z++)
+            for (int z = 0; z < 4; z++)
             {
-                world.CreateChunk(new Vector2Int(x, z));
+                world.GetChunk(new Vector2Int(x, z));
             }
         }
     }
