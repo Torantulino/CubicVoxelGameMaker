@@ -10,6 +10,8 @@ public class World
     public static int WORLD_HEIGHT = 64;
     public static int SEA_LEVEL = 32;
     public static float NOISE_SCALE = 0.033f;
+    public static System.Random random = new System.Random(); //Can take seed
+
 
     ChunkManager chunk_manager = new ChunkManager();
 
@@ -96,7 +98,24 @@ public class World
         // Obtain references
         LevelManager level_manager = GameObject.FindObjectOfType<LevelManager>();
 
-        CombineInstance[] combine_meshes = new CombineInstance[_chunk.blocks.Length * 6];
+
+        //Count faces
+        int no_faces = 0;
+        foreach (Block block in _chunk.blocks)
+        {
+            // Disregard Air
+            if(block.type == (int)BlockInfo.BlockType.Air)
+                continue;
+
+            for (int i = 0; i < block.Faces.Length; i++)
+            {
+                if(!block.Faces[i].Render)
+                    continue;
+                no_faces ++;
+            }
+        }
+
+        CombineInstance[] combine_meshes = new CombineInstance[no_faces];
 
         int current_mesh = 0;
         foreach (Block block in _chunk.blocks)
@@ -110,13 +129,15 @@ public class World
                 if(!block.Faces[i].Render)
                     continue;
 
-                combine_meshes[current_mesh].mesh = block.Faces[i].mesh;
+                combine_meshes[current_mesh].mesh = new Mesh();
+                combine_meshes[current_mesh].mesh.vertices = block.Faces[i].Vertices;
+                combine_meshes[current_mesh].mesh.triangles = block.Faces[i].Triangles;
+                combine_meshes[current_mesh].mesh.normals = block.Faces[i].Normals;
+                combine_meshes[current_mesh].mesh.SetUVs(0, block.Faces[i].UVs);
+
                 //Matrix4x4.Translate(block.Position)
                 combine_meshes[current_mesh].transform = Matrix4x4.Translate(block.Position);//.localToWorldMatrix;
                 current_mesh++;
-
-                // Set face to not render TODO: REMOVE
-                block.Faces[i].Render = false;
             }
         }
 
@@ -130,7 +151,7 @@ public class World
         mesh_filter.mesh.CombineMeshes(combine_meshes, true);
         
         // Set material
-        mesh_renderer.material = level_manager.Texture_Manager.Block_Material;
+        mesh_renderer.material = TextureManager.Block_Material;
 
         _chunk.needs_updating = false;
     }
