@@ -4,13 +4,10 @@ using UnityEngine;
 
 public class Block
 {
-    public int type;
+    public int type = (int)BlockInfo.BlockType.Air;
     public bool hitboxEnabled;
-
-    public GameObject Game_Object;
-
     public BlockFace[] Faces = new BlockFace[6];
-
+    public Vector3 Position;
 
 
     public Block(int _type, Vector3 _pos, bool _hitboxEnabled = true)
@@ -18,6 +15,7 @@ public class Block
         // Set properties
         type = _type;
         hitboxEnabled = _hitboxEnabled;
+        Position = _pos;
         
         if(_type == (int)BlockInfo.BlockType.Air)
         {
@@ -26,10 +24,6 @@ public class Block
         }
         // Obtain references
         LevelManager level_manager = GameObject.FindObjectOfType<LevelManager>();
-
-        
-        // Create GameObject
-        Game_Object = new GameObject("Block");
 
         // Create faces
         for (int i = 0; i < 6; i++)
@@ -41,7 +35,5 @@ public class Block
             );
             Faces[i] = _face;
         }
-        // Set object positions
-        Game_Object.transform.position = _pos;
     }
 }

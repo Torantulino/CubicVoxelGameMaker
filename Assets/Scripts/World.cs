@@ -9,7 +9,6 @@ public class World
     public static int CHUNK_SIZE = 16;
     public static int WORLD_HEIGHT = 64;
     public static int SEA_LEVEL = 32;
-
     public static float NOISE_SCALE = 0.033f;
 
     ChunkManager chunk_manager = new ChunkManager();
@@ -42,38 +41,38 @@ public class World
                     try
                     {
                         // X
-                        if (x + 1 != CHUNK_SIZE && _chunk.blocks[x + 1, y, z].Game_Object != null
+                        if (x + 1 != CHUNK_SIZE && _chunk.blocks[x + 1, y, z].type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             _chunk.blocks[x + 1, y, z].Faces[1].Render = false;
                         }
                         // -X 
-                        if (x != 0 && _chunk.blocks[x - 1, y, z].Game_Object != null 
+                        if (x != 0 && _chunk.blocks[x - 1, y, z].type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             _chunk.blocks[x - 1, y, z].Faces[0].Render = false;
                         }
                         // Z
-                        if (z + 1 != CHUNK_SIZE && _chunk.blocks[x, y, z + 1].Game_Object != null
+                        if (z + 1 != CHUNK_SIZE && _chunk.blocks[x, y, z + 1].type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             _chunk.blocks[x, y, z + 1].Faces[3].Render = false;
                         }
                         // -Z 
-                        if (z != 0 && _chunk.blocks[x, y, z - 1].Game_Object != null
+                        if (z != 0 && _chunk.blocks[x, y, z - 1].type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             _chunk.blocks[x, y, z - 1].Faces[2].Render = false;
                         }
                         // Y
-                        if (y + 1 != WORLD_HEIGHT && _chunk.blocks[x, y + 1, z].Game_Object != null
+                        if (y + 1 != WORLD_HEIGHT && _chunk.blocks[x, y + 1, z].type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             // Bottom
                             _chunk.blocks[x, y + 1, z].Faces[5].Render = false;
                         }
                         // -Y 
-                        if (y != 0 && _chunk.blocks[x, y - 1, z].Game_Object != null
+                        if (y != 0 && _chunk.blocks[x, y - 1, z].type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             // Top
@@ -112,7 +111,8 @@ public class World
                     continue;
 
                 combine_meshes[current_mesh].mesh = block.Faces[i].mesh;
-                combine_meshes[current_mesh].transform = block.Game_Object.transform.localToWorldMatrix;
+                //Matrix4x4.Translate(block.Position)
+                combine_meshes[current_mesh].transform = Matrix4x4.Translate(block.Position);//.localToWorldMatrix;
                 current_mesh++;
 
                 // Set face to not render TODO: REMOVE
