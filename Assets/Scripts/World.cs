@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,6 +32,28 @@ public class World
     {
         if (!_chunk.has_loaded || !_chunk.needs_updating)
             return;
+
+        // Unload chunk
+        if(_chunk.unload)
+        {
+            // Destroy Game Object (If unloading before creation is complete return until loaded)
+            if (!chunk_manager.Chunk_GameObjects.ContainsKey(_chunk.Position))
+                return;
+            UnityEngine.Object.Destroy(chunk_manager.Chunk_GameObjects[_chunk.Position]);
+
+            // Remove from collections
+            {
+                Chunk to_delete;
+                chunk_manager.Chunks.TryRemove(_chunk.Position, out to_delete);
+            }
+            {
+                GameObject to_delete;
+                chunk_manager.Chunk_GameObjects.TryRemove(_chunk.Position, out to_delete);
+            }
+
+            
+            return;
+        }
 
         for (int x = 0; x < CHUNK_SIZE; x++)
         {
@@ -144,7 +166,7 @@ public class World
         MeshFilter mesh_filter;
 
         // If Chunk is loaded, update
-        if(chunk_manager.LoadedChunks.Contains(_chunk.Position))
+        if(chunk_manager.Chunk_GameObjects.ContainsKey(_chunk.Position))
         {
             // Get Gameobject
             chunk_object = chunk_manager.Chunk_GameObjects[_chunk.Position];
@@ -158,7 +180,7 @@ public class World
         // Else create
         else
         {
-        // Create Gameobject
+            // Create Gameobject
             chunk_object = new GameObject("Chunk");
             // Add Components
             mesh_renderer = chunk_object.AddComponent<MeshRenderer>();
@@ -167,7 +189,6 @@ public class World
 
         // Position
         chunk_object.transform.position = new Vector3(_chunk.Position.x * World.CHUNK_SIZE, 0.0f, _chunk.Position.y * World.CHUNK_SIZE);
-
 
         // Combine meshes into single mesh
         mesh_filter.mesh = new Mesh();
@@ -181,6 +202,9 @@ public class World
         
         // Set material
         mesh_renderer.material = TextureManager.Block_Material;
+
+        // Add GameObject to collection
+        chunk_manager.Chunk_GameObjects[_chunk.Position] = chunk_object;
 
         // Set flag to show chunk is up-to-date
         _chunk.needs_updating = false;

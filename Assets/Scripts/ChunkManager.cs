@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
@@ -9,7 +9,7 @@ using System.Collections.Concurrent;
 public class ChunkManager
 {
     public readonly ConcurrentDictionary<Vector2Int, Chunk> Chunks = new ConcurrentDictionary<Vector2Int, Chunk>();
-    public HashSet<Vector2Int> LoadedChunks = new HashSet<Vector2Int>();
+    public HashSet<Vector2Int> ActiveChunks = new HashSet<Vector2Int>();
     public ConcurrentDictionary<Vector2Int, GameObject> Chunk_GameObjects = new ConcurrentDictionary<Vector2Int, GameObject>();
     
     // Loads and Unloads chunks as needed
@@ -26,11 +26,24 @@ public class ChunkManager
         int min_z = _player_position.y - World.RENDER_DISTANCE;
         int max_z = _player_position.y + World.RENDER_DISTANCE;
 
-        //Debug.Log("Player PosX: " + _player_position.x);
-        //Debug.Log("Min_X: " + min_x);
-
         // Unload Chunks
-
+        {
+            List<Vector2Int> to_remove = new List<Vector2Int>();
+            foreach (Vector2Int _pos in Chunks.Keys)
+            {
+                if (_pos.x < min_x || _pos.x > max_x || _pos.y < min_z || _pos.y > max_z)
+                {
+                    Chunks[_pos].unload = true;
+                    Chunks[_pos].needs_updating = true;
+                    to_remove.Add(_pos);
+                }
+            }
+            // Remove from collection
+            foreach (Vector2Int _pos in to_remove)
+            {
+                ActiveChunks.Remove(_pos);
+            }
+        }
 
         // Load Chunks
         for (int x = min_x; x <= max_x; x++)
@@ -40,9 +53,9 @@ public class ChunkManager
                 Vector2Int _chunk = new Vector2Int(x, z);
 
                 // Check Hashmap to ensure currently loading chunks aren't recalled
-                if(!LoadedChunks.Contains(_chunk))
+                if(!ActiveChunks.Contains(_chunk))
                 {
-                    LoadedChunks.Add(_chunk);
+                    ActiveChunks.Add(_chunk);
                     LoadChunk(_chunk);
                 }
             }
