@@ -6,7 +6,6 @@ using UnityEngine.U2D;
 public class LevelManager : MonoBehaviour
 {
     public ChunkManager Chunk_Manager;
-
     World world;
 
     /// Awake is called when the script instance is being loaded.
@@ -23,15 +22,6 @@ public class LevelManager : MonoBehaviour
         // Create managers
         Chunk_Manager = new ChunkManager();
         world = new World();
-
-
-        for(int x = 0; x < 4; x++)
-        {
-            for (int z = 0; z < 4; z++)
-            {
-                world.GetChunk(new Vector2Int(x, z));
-            }
-        }
     }
 
     // Update is called once per frame

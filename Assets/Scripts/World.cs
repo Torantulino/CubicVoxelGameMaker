@@ -10,15 +10,12 @@ public class World
     public static int WORLD_HEIGHT = 64;
     public static int SEA_LEVEL = 32;
     public static float NOISE_SCALE = 0.033f;
+    public static int RENDER_DISTANCE = 1;
     public static System.Random random = new System.Random(); //Can take seed
 
 
     ChunkManager chunk_manager = new ChunkManager();
 
-    public void GetChunk(Vector2Int _chunk_pos)
-    {
-        chunk_manager.LoadChunk(_chunk_pos);
-    }
 
     public void UpdateWorld()
     {
@@ -27,6 +24,8 @@ public class World
             Chunk _chunk = _pair.Value;
             CullHiddenFaces(_chunk);
         }
+
+        chunk_manager.UpdateChunks();
     }
 
     private void CullHiddenFaces(Chunk _chunk)
