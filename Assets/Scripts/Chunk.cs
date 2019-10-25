@@ -7,7 +7,6 @@ public class Chunk
     public bool has_loaded = false;
     public bool needs_updating = true;
     public Vector2Int Position;
-    public GameObject Game_Object = new GameObject("Chunk");
 
     public Block[,,] blocks = 
         new Block[World.CHUNK_SIZE, World.WORLD_HEIGHT, World.CHUNK_SIZE];
@@ -57,7 +56,6 @@ public class Chunk
             }
         }
 
-        Game_Object.transform.position = new Vector3(Position.x * World.CHUNK_SIZE, 0.0f, Position.y * World.CHUNK_SIZE);
         has_loaded = true;
     }
 }

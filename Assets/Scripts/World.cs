@@ -120,8 +120,11 @@ public class World
             }
         }
 
-        MeshRenderer mesh_renderer = _chunk.Game_Object.AddComponent<MeshRenderer>();
-        MeshFilter mesh_filter = _chunk.Game_Object.AddComponent<MeshFilter>();
+        GameObject chunk_object = new GameObject("Chunk");
+        chunk_object.transform.position = new Vector3(_chunk.Position.x * World.CHUNK_SIZE, 0.0f, _chunk.Position.y * World.CHUNK_SIZE);
+
+        MeshRenderer mesh_renderer = chunk_object.AddComponent<MeshRenderer>();
+        MeshFilter mesh_filter = chunk_object.AddComponent<MeshFilter>();
 
         mesh_filter.mesh = new Mesh();
         mesh_filter.mesh.CombineMeshes(combine_meshes, true);
