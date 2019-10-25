@@ -71,7 +71,7 @@ public class TextureManager
         // Iterate over textures adding pixel data to Texture Array
         for (int i = 0; i < block_textures.Length; i++)
         {
-            Debug.Log("Loading " + block_textures[i].name);
+            //Debug.Log("Loading " + block_textures[i].name);
             Texture2D _texture = block_textures[i];
             _texture_array.SetPixels(_texture.GetPixels(0), i, 0);
         }
