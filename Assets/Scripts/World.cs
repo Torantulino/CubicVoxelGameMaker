@@ -67,31 +67,31 @@ public class World
                         // Don't render the face facing the next block
                         // -------------------------------------------
                         Block this_block = _chunk.blocks[x, y, z];
+
                         // X
-                        if (x + 1 != CHUNK_SIZE 
+                        if (x != CHUNK_SIZE - 1
                             && this_block.type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x + 1, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             this_block.Faces[0].Render = false;
                         }
                         // (Chunk) 'Edge' Case
-                        else if(x + 1 == CHUNK_SIZE
+                        else if(x == CHUNK_SIZE - 1
                             && this_block.type != (int)BlockInfo.BlockType.Air)
                         {
-                            // TryGet neighbouring chunk                            
-                            Chunk neighbour_chunk;
-                            chunk_manager.Chunks.TryGetValue(new Vector2Int(_chunk.Position.x + 1, _chunk.Position.y), out neighbour_chunk);
-                            if(neighbour_chunk == null)
-                                break;  //TODO: Handle this
+                            // Get neighbouring chunk position                            
+                            Vector2Int neighbour_chunk_pos = new Vector2Int(_chunk.Position.x + 1, _chunk.Position.y);
 
-                            //Get neighbouring block
-                            Block neighbour_block = neighbour_chunk.blocks[CHUNK_SIZE - 1, y, z];
-                            // If neighbour isn't air, don't render this block
-                            if (neighbour_block.type != (int)BlockInfo.BlockType.Air)
+                            int neighbour_block_height = ChunkManager.GetBlockHeight(0, z, neighbour_chunk_pos);
+
+                            // If neighbour is underground, don't render
+                            // TODO: Check player modified blocks here when implemented
+                            if (y <= neighbour_block_height)
                             {
                                 this_block.Faces[0].Render = false;
                             }
                         }
+                        
                         // -X 
                         if (x != 0 
                             && this_block.type != (int)BlockInfo.BlockType.Air
@@ -99,13 +99,47 @@ public class World
                         {
                             this_block.Faces[1].Render = false;
                         }
+                        // (Chunk) 'Edge' Case
+                        else if(x == 0
+                            && this_block.type != (int)BlockInfo.BlockType.Air)
+                        {
+                            // Get neighbouring chunk position                            
+                            Vector2Int neighbour_chunk_pos = new Vector2Int(_chunk.Position.x - 1, _chunk.Position.y);
+
+                            int neighbour_block_height = ChunkManager.GetBlockHeight(CHUNK_SIZE - 1, z, neighbour_chunk_pos);
+
+                            // If neighbour is underground, don't render
+                            // TODO: Check player modified blocks here when implemented
+                            if (y <= neighbour_block_height)
+                            {
+                                this_block.Faces[1].Render = false;
+                            }
+                        }
+
                         // Z
-                        if (z + 1 != CHUNK_SIZE 
+                        if (z != CHUNK_SIZE - 1 
                             && this_block.type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y, z + 1].type != (int)BlockInfo.BlockType.Air)
                         {
                             this_block.Faces[2].Render = false;
                         }
+                        // (Chunk) 'Edge' Case
+                        else if(z == CHUNK_SIZE - 1
+                            && this_block.type != (int)BlockInfo.BlockType.Air)
+                        {
+                            // Get neighbouring chunk position                            
+                            Vector2Int neighbour_chunk_pos = new Vector2Int(_chunk.Position.x, _chunk.Position.y + 1);
+
+                            int neighbour_block_height = ChunkManager.GetBlockHeight(x, 0, neighbour_chunk_pos);
+
+                            // If neighbour is underground, don't render
+                            // TODO: Check player modified blocks here when implemented
+                            if (y <= neighbour_block_height)
+                            {
+                                this_block.Faces[2].Render = false;
+                            }
+                        }
+                        
                         // -Z 
                         if (z != 0 
                             && this_block.type != (int)BlockInfo.BlockType.Air
@@ -113,20 +147,37 @@ public class World
                         {
                             this_block.Faces[3].Render = false;
                         }
+                        // (Chunk) 'Edge' Case
+                        else if(z == 0
+                            && this_block.type != (int)BlockInfo.BlockType.Air)
+                        {
+                            // Get neighbouring chunk position                            
+                            Vector2Int neighbour_chunk_pos = new Vector2Int(_chunk.Position.x, _chunk.Position.y - 1);
+
+                            int neighbour_block_height = ChunkManager.GetBlockHeight(x, CHUNK_SIZE - 1, neighbour_chunk_pos);
+
+                            // If neighbour is underground, don't render
+                            // TODO: Check player modified blocks here when implemented
+                            if (y <= neighbour_block_height)
+                            {
+                                this_block.Faces[3].Render = false;
+                            }
+                        }
+                        
                         // Y
-                        if (y + 1 != WORLD_HEIGHT 
+                        if (y != WORLD_HEIGHT - 1
                             && this_block.type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y + 1, z].type != (int)BlockInfo.BlockType.Air)
                         {
                             this_block.Faces[4].Render = false;
                         }
+
                         // -Y 
-                        if (y != 0 
-                            && this_block.type != (int)BlockInfo.BlockType.Air
-                            && _chunk.blocks[x, y - 1, z].type != (int)BlockInfo.BlockType.Air)
+                        //TODO: Realistically, only player edits need to be checked here, unless natural caves/tunnels/overhangs are implemented.
+                        if (this_block.type != (int)BlockInfo.BlockType.Air)
                         {
                             this_block.Faces[5].Render = false;
-                        }
+                        }                       
                     }
                     catch (System.IndexOutOfRangeException)
                     {
