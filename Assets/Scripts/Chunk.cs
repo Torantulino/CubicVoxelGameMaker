@@ -33,11 +33,19 @@ public class Chunk
 
                     // Set block type
                     int block_type;
-                    // Grass
+                    // Air
                     if(y > height)
                         block_type = (int)BlockInfo.BlockType.Air;
+                    // Grass
                     else if(y == height)
-                        block_type = (int)BlockInfo.BlockType.Grass;
+                    {
+                        //Snowy
+                        if(y >= World.WORLD_HEIGHT - World.random.Next(23, 25))
+                            block_type = (int)BlockInfo.BlockType.Snow;
+                        //Normal
+                        else
+                            block_type = (int)BlockInfo.BlockType.Grass;
+                    }
                     // Dirt
                     else if(y > height - World.random.Next(3, 6)) // Random.Range(3,6))
                         block_type = (int)BlockInfo.BlockType.Dirt;
