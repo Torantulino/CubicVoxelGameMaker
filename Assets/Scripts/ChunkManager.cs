@@ -12,6 +12,7 @@ public class ChunkManager
     public HashSet<Vector2Int> ActiveChunks = new HashSet<Vector2Int>();
     public ConcurrentDictionary<Vector2Int, GameObject> Chunk_GameObjects = new ConcurrentDictionary<Vector2Int, GameObject>();
     
+    // Gets the natural terrain height at the specified position, in the specified chunk
     public static int GetBlockHeight(int _block_x, int _block_z, Vector2Int _chunk_pos)
     {
         // Get height from noise
@@ -40,13 +41,13 @@ public class ChunkManager
         // Unload Chunks
         {
             List<Vector2Int> to_remove = new List<Vector2Int>();
-            foreach (Vector2Int _pos in Chunks.Keys)
+            foreach (Vector2Int _chunk_pos in Chunks.Keys)
             {
-                if (_pos.x < min_x || _pos.x > max_x || _pos.y < min_z || _pos.y > max_z)
+                if (Vector2Int.Distance(_player_position, _chunk_pos) > World.RENDER_DISTANCE + 0.5)
                 {
-                    Chunks[_pos].unload = true;
-                    Chunks[_pos].needs_updating = true;
-                    to_remove.Add(_pos);
+                    Chunks[_chunk_pos].unload = true;
+                    Chunks[_chunk_pos].needs_updating = true;
+                    to_remove.Add(_chunk_pos);
                 }
             }
             // Remove from collection
@@ -61,13 +62,16 @@ public class ChunkManager
         {
             for (int z = min_z; z <= max_z; z++)
             {
-                Vector2Int _chunk = new Vector2Int(x, z);
+                Vector2Int _chunk_pos = new Vector2Int(x, z);
+
+                if (Vector2Int.Distance(_player_position, _chunk_pos) > World.RENDER_DISTANCE + 0.5)
+                    continue;
 
                 // Check Hashmap to ensure currently loading chunks aren't recalled
-                if(!ActiveChunks.Contains(_chunk))
+                if(!ActiveChunks.Contains(_chunk_pos))
                 {
-                    ActiveChunks.Add(_chunk);
-                    LoadChunk(_chunk);
+                    ActiveChunks.Add(_chunk_pos);
+                    LoadChunk(_chunk_pos);
                 }
             }
         }
