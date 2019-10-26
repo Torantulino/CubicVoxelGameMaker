@@ -50,8 +50,6 @@ public class World
                 GameObject to_delete;
                 chunk_manager.Chunk_GameObjects.TryRemove(_chunk.Position, out to_delete);
             }
-
-            
             return;
         }
 
@@ -67,48 +65,67 @@ public class World
                         // If this block isn't at the edge of the chunk
                         // And neither this or the next block is air
                         // Don't render the face facing the next block
-
+                        // -------------------------------------------
+                        Block this_block = _chunk.blocks[x, y, z];
                         // X
                         if (x + 1 != CHUNK_SIZE 
-                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air
+                            && this_block.type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x + 1, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x, y, z].Faces[0].Render = false;
+                            this_block.Faces[0].Render = false;
+                        }
+                        // (Chunk) 'Edge' Case
+                        else if(x + 1 == CHUNK_SIZE
+                            && this_block.type != (int)BlockInfo.BlockType.Air)
+                        {
+                            // TryGet neighbouring chunk                            
+                            Chunk neighbour_chunk;
+                            chunk_manager.Chunks.TryGetValue(new Vector2Int(_chunk.Position.x + 1, _chunk.Position.y), out neighbour_chunk);
+                            if(neighbour_chunk == null)
+                                break;  //TODO: Handle this
+
+                            //Get neighbouring block
+                            Block neighbour_block = neighbour_chunk.blocks[CHUNK_SIZE - 1, y, z];
+                            // If neighbour isn't air, don't render this block
+                            if (neighbour_block.type != (int)BlockInfo.BlockType.Air)
+                            {
+                                this_block.Faces[0].Render = false;
+                            }
                         }
                         // -X 
                         if (x != 0 
-                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air
+                            && this_block.type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x - 1, y, z].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x, y, z].Faces[1].Render = false;
+                            this_block.Faces[1].Render = false;
                         }
                         // Z
                         if (z + 1 != CHUNK_SIZE 
-                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air
+                            && this_block.type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y, z + 1].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x, y, z].Faces[2].Render = false;
+                            this_block.Faces[2].Render = false;
                         }
                         // -Z 
                         if (z != 0 
-                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air
+                            && this_block.type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y, z - 1].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x, y, z].Faces[3].Render = false;
+                            this_block.Faces[3].Render = false;
                         }
                         // Y
                         if (y + 1 != WORLD_HEIGHT 
-                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air
+                            && this_block.type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y + 1, z].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x, y, z].Faces[4].Render = false;
+                            this_block.Faces[4].Render = false;
                         }
                         // -Y 
                         if (y != 0 
-                            && _chunk.blocks[x, y, z].type != (int)BlockInfo.BlockType.Air
+                            && this_block.type != (int)BlockInfo.BlockType.Air
                             && _chunk.blocks[x, y - 1, z].type != (int)BlockInfo.BlockType.Air)
                         {
-                            _chunk.blocks[x, y, z].Faces[5].Render = false;
+                            this_block.Faces[5].Render = false;
                         }
                     }
                     catch (System.IndexOutOfRangeException)
