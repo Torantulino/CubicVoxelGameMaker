@@ -23,13 +23,8 @@ public class Chunk
             {
                 for (int z = 0; z < World.CHUNK_SIZE; z++)
                 {
-                    // Get height from noise
-                    // Chunk position used for continuation between chunks
-                    // WORLD_HEIGHT - 10 used as scale to prevent mountains up to build limit
-                    float scale = World.WORLD_HEIGHT-10;
-                    float noise_sample = Mathf.PerlinNoise((float)(x + (Position.x)*World.CHUNK_SIZE) * World.NOISE_SCALE,
-                                                            (float)(z + (Position.y)*World.CHUNK_SIZE) * World.NOISE_SCALE);
-                    int height = (int)(scale * noise_sample);
+                    // Get landscape height
+                    int height = ChunkManager.GetBlockHeight(x, z, Position);
 
                     // Set block type
                     int block_type;
@@ -57,7 +52,8 @@ public class Chunk
                         else
                             block_type = (int)BlockInfo.BlockType.Dirt;
                     }
-                        
+
+                    // Create block
                     Block b = new Block(block_type,
                         new Vector3(x,y,z));
                     blocks[x,y,z] = b;
