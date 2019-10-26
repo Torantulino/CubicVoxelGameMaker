@@ -10,7 +10,7 @@ public class World
     public static int WORLD_HEIGHT = 64;
     public static int SEA_LEVEL = 32;
     public static float NOISE_SCALE = 0.033f;
-    public static int RENDER_DISTANCE = 1;
+    public static int RENDER_DISTANCE = 3;
     public static System.Random random = new System.Random(); //Can take seed
 
 
