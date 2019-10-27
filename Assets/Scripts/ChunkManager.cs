@@ -11,26 +11,6 @@ public class ChunkManager
     public readonly ConcurrentDictionary<Vector2Int, Chunk> Chunks = new ConcurrentDictionary<Vector2Int, Chunk>();
     public HashSet<Vector2Int> ActiveChunks = new HashSet<Vector2Int>();
     public ConcurrentDictionary<Vector2Int, GameObject> Chunk_GameObjects = new ConcurrentDictionary<Vector2Int, GameObject>();
-    
-    // Gets the natural terrain height at the specified position, in the specified chunk
-    public static int GetBlockHeight(int _block_x, int _block_z, Vector2Int _chunk_pos)
-    {
-        // Get height from noise
-        // Chunk position used for continuation between chunks
-        // WORLD_HEIGHT - 5 used as scale to prevent mountains up to build limit
-        float scale = World.WORLD_HEIGHT - 5;
-        float x_offset = 1234.0f;
-        float z_offset = 4321.0f;
-
-        float noise_sample1 = Mathf.PerlinNoise((float)(_block_x + _chunk_pos.x * World.CHUNK_SIZE) * World.NOISE_SCALE,
-                                                (float)(_block_z + _chunk_pos.y * World.CHUNK_SIZE) * World.NOISE_SCALE);
-
-        float noise_sample2 = Mathf.PerlinNoise((float)(_block_x + _chunk_pos.x * World.CHUNK_SIZE + x_offset)  * World.NOISE_SCALE,
-                                                (float)(_block_z + _chunk_pos.y * World.CHUNK_SIZE + z_offset) * World.NOISE_SCALE);
-
-        float noise_sample = (noise_sample1 + noise_sample2) / 2.0f;
-        return (int)(scale * noise_sample);
-    }
 
     // Loads and Unloads chunks as needed
     public void UpdateChunks()

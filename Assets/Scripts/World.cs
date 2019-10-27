@@ -9,7 +9,7 @@ public class World
     public static int CHUNK_SIZE = 16;
     public static int WORLD_HEIGHT = 64;
     public static int SEA_LEVEL = 32;
-    public static float NOISE_SCALE = 0.033f;
+    public static float NOISE_SCALE = 27.6f;
     public static int RENDER_DISTANCE = 3;
     public static System.Random random = new System.Random(); //Can take seed
 
@@ -82,7 +82,7 @@ public class World
                             // Get neighbouring chunk position                            
                             Vector2Int neighbour_chunk_pos = new Vector2Int(_chunk.Position.x + 1, _chunk.Position.y);
 
-                            int neighbour_block_height = ChunkManager.GetBlockHeight(0, z, neighbour_chunk_pos);
+                            int neighbour_block_height = Noise.GetBlockHeight(0, z, neighbour_chunk_pos);
 
                             // If neighbour is underground, don't render
                             // TODO: Check player modified blocks here when implemented
@@ -106,7 +106,7 @@ public class World
                             // Get neighbouring chunk position                            
                             Vector2Int neighbour_chunk_pos = new Vector2Int(_chunk.Position.x - 1, _chunk.Position.y);
 
-                            int neighbour_block_height = ChunkManager.GetBlockHeight(CHUNK_SIZE - 1, z, neighbour_chunk_pos);
+                            int neighbour_block_height = Noise.GetBlockHeight(CHUNK_SIZE - 1, z, neighbour_chunk_pos);
 
                             // If neighbour is underground, don't render
                             // TODO: Check player modified blocks here when implemented
@@ -130,7 +130,7 @@ public class World
                             // Get neighbouring chunk position                            
                             Vector2Int neighbour_chunk_pos = new Vector2Int(_chunk.Position.x, _chunk.Position.y + 1);
 
-                            int neighbour_block_height = ChunkManager.GetBlockHeight(x, 0, neighbour_chunk_pos);
+                            int neighbour_block_height = Noise.GetBlockHeight(x, 0, neighbour_chunk_pos);
 
                             // If neighbour is underground, don't render
                             // TODO: Check player modified blocks here when implemented
@@ -154,7 +154,7 @@ public class World
                             // Get neighbouring chunk position                            
                             Vector2Int neighbour_chunk_pos = new Vector2Int(_chunk.Position.x, _chunk.Position.y - 1);
 
-                            int neighbour_block_height = ChunkManager.GetBlockHeight(x, CHUNK_SIZE - 1, neighbour_chunk_pos);
+                            int neighbour_block_height = Noise.GetBlockHeight(x, CHUNK_SIZE - 1, neighbour_chunk_pos);
 
                             // If neighbour is underground, don't render
                             // TODO: Check player modified blocks here when implemented

@@ -24,7 +24,7 @@ public class Chunk
                 for (int z = 0; z < World.CHUNK_SIZE; z++)
                 {
                     // Get landscape height
-                    int height = ChunkManager.GetBlockHeight(x, z, Position);
+                    int height = Noise.GetBlockHeight(x, z, Position);
 
                     // Set block type
                     int block_type;
