@@ -28,21 +28,35 @@ public class Chunk
 
                     // Set block type
                     int block_type;
-                    // Air
+                    // Above hieght-map
                     if(y > height)
+                    {
+                        // // Water
+                        // if (y < World.SEA_LEVEL)
+                        //     block_type = (int)BlockInfo.BlockType.Water;
+                        //Air
                         block_type = (int)BlockInfo.BlockType.Air;
-                    // Grass
+                    }
+                    // Top Soil
                     else if(y == height)
                     {
-                        //Snowy
-                        if(y >= World.WORLD_HEIGHT - World.random.Next(23, 25))
+                        // Snowy Grass
+                        if(y >= World.WORLD_HEIGHT - 3.0f/8.0f * World.WORLD_HEIGHT)
                             block_type = (int)BlockInfo.BlockType.Snow;
-                        //Normal
+                        else if(y > World.WORLD_HEIGHT - 4.0f/8.0f * World.WORLD_HEIGHT)
+                            block_type = (int)BlockInfo.BlockType.Dry_Grass;
+                        // Sand
+                        else if (y < World.SEA_LEVEL)
+                            block_type = (int)BlockInfo.BlockType.Sand;
+                        // Dark Grass
+                        else if (y < World.SEA_LEVEL + (1.0f/16.0f * World.WORLD_HEIGHT))
+                            block_type = (int)BlockInfo.BlockType.Dark_Grass;
+                        // Grass
                         else
                             block_type = (int)BlockInfo.BlockType.Grass;
                     }
                     // Dirt
-                    else if(y > height - World.random.Next(3, 6)) // Random.Range(3,6))
+                    else if(y > height - World.random.Next(3, 6))
                         block_type = (int)BlockInfo.BlockType.Dirt;
                     // Stone & Dirt
                     else
