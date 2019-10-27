@@ -32,6 +32,18 @@ public class TextureManager
             }
             return block_material;
         }
+    }   
+    private static Material sea_material;
+    public static Material Sea_Material
+    {
+        get
+        {
+            if (sea_material == null)
+            {
+                sea_material = Resources.Load<Material>("Materials/Water");
+            }
+            return sea_material;
+        }
     }
     private Mesh mesh;
     public Mesh Mesh

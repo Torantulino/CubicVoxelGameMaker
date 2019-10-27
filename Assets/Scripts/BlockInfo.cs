@@ -11,19 +11,23 @@ public static class BlockInfo
         Dirt = 2,
         Stone = 3,
         Sand = 4,
-        Snow = 5,
+        LightStone = 5,
+        Snow = 6,
+        Water = 7,
     }
 
     // Number of texture in atlas for each face
     // X, -X, Z, -Z, Y, -Y 
-    public static int[,] Face_Textures = new int[6,6]
+    public static int[,] Face_Textures = new int[8,6]
     {
         {0,0,0,0,0,0},  //Air
         {1,1,1,1,0,2},  //Grass
         {2,2,2,2,2,2},  //Dirt
         {3,3,3,3,3,3},  //Stone
         {4,4,4,4,4,4},  //Sand
-        {7,7,7,7,6,2}   //Snow
+        {5,5,5,5,5,5},  //LightStone
+        {7,7,7,7,6,2},  //Snow
+        {8,8,8,8,8,8}   //Water
     };
 
     public static Vector3[] normals = new Vector3[6]
