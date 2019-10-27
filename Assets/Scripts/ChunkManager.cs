@@ -17,10 +17,18 @@ public class ChunkManager
     {
         // Get height from noise
         // Chunk position used for continuation between chunks
-        // WORLD_HEIGHT - 10 used as scale to prevent mountains up to build limit
-        float scale = World.WORLD_HEIGHT - 10;
-        float noise_sample = Mathf.PerlinNoise((float)(_block_x + _chunk_pos.x * World.CHUNK_SIZE) * World.NOISE_SCALE,
+        // WORLD_HEIGHT - 5 used as scale to prevent mountains up to build limit
+        float scale = World.WORLD_HEIGHT - 5;
+        float x_offset = 1234.0f;
+        float z_offset = 4321.0f;
+
+        float noise_sample1 = Mathf.PerlinNoise((float)(_block_x + _chunk_pos.x * World.CHUNK_SIZE) * World.NOISE_SCALE,
                                                 (float)(_block_z + _chunk_pos.y * World.CHUNK_SIZE) * World.NOISE_SCALE);
+
+        float noise_sample2 = Mathf.PerlinNoise((float)(_block_x + _chunk_pos.x * World.CHUNK_SIZE + x_offset)  * World.NOISE_SCALE,
+                                                (float)(_block_z + _chunk_pos.y * World.CHUNK_SIZE + z_offset) * World.NOISE_SCALE);
+
+        float noise_sample = (noise_sample1 + noise_sample2) / 2.0f;
         return (int)(scale * noise_sample);
     }
 
