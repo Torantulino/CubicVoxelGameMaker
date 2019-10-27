@@ -27,27 +27,37 @@ public class ChunkManager
     // Loads and Unloads chunks as needed
     public void UpdateChunks()
     {
-        // Casting to Int in C# rounds towards 0!
-        Vector2Int _player_position 
+        // Round down to get current chunk
+        Vector2Int rounded_player_position 
             = new Vector2Int( Mathf.FloorToInt(Camera.main.transform.position.x / World.CHUNK_SIZE), 
                               Mathf.FloorToInt(Camera.main.transform.position.z / World.CHUNK_SIZE) );
+        // Actual player position
+        Vector2 actual_player_position 
+            = new Vector2((Camera.main.transform.position.x / World.CHUNK_SIZE), 
+                            (Camera.main.transform.position.z / World.CHUNK_SIZE) );
 
         // Calculate chunk extremeties
-        int min_x = _player_position.x - World.RENDER_DISTANCE;
-        int max_x = _player_position.x + World.RENDER_DISTANCE;
-        int min_z = _player_position.y - World.RENDER_DISTANCE;
-        int max_z = _player_position.y + World.RENDER_DISTANCE;
+        int min_x = rounded_player_position.x - World.RENDER_DISTANCE;
+        int max_x = rounded_player_position.x + World.RENDER_DISTANCE;
+        int min_z = rounded_player_position.y - World.RENDER_DISTANCE;
+        int max_z = rounded_player_position.y + World.RENDER_DISTANCE;
+
+        //TODO: REMOVE DEBUG METRICS
+        // int unloaded_chunks = 0;
+        // int loaded_chunks = 0;
 
         // Unload Chunks
         {
             List<Vector2Int> to_remove = new List<Vector2Int>();
             foreach (Vector2Int _chunk_pos in Chunks.Keys)
             {
-                if (Vector2Int.Distance(_player_position, _chunk_pos) > World.RENDER_DISTANCE + 0.5)
+                if (Vector2.Distance(actual_player_position, _chunk_pos) > ((float)(World.RENDER_DISTANCE)) + 1.33f)
                 {
                     Chunks[_chunk_pos].unload = true;
                     Chunks[_chunk_pos].needs_updating = true;
                     to_remove.Add(_chunk_pos);
+
+                    // unloaded_chunks++;
                 }
             }
             // Remove from collection
@@ -64,7 +74,8 @@ public class ChunkManager
             {
                 Vector2Int _chunk_pos = new Vector2Int(x, z);
 
-                if (Vector2Int.Distance(_player_position, _chunk_pos) > World.RENDER_DISTANCE + 0.5)
+                // Disregard corner chunks outside true render distance
+                if (Vector2.Distance(actual_player_position, _chunk_pos) > ((float)World.RENDER_DISTANCE))
                     continue;
 
                 // Check Hashmap to ensure currently loading chunks aren't recalled
@@ -72,9 +83,14 @@ public class ChunkManager
                 {
                     ActiveChunks.Add(_chunk_pos);
                     LoadChunk(_chunk_pos);
+
+                    // loaded_chunks++;
                 }
             }
         }
+
+        // Debug.Log("Chunks Unloaded: " + unloaded_chunks + " | Chunks Loaded: " + loaded_chunks);
+        // Debug.Log("TOTAL: " + (unloaded_chunks + loaded_chunks));
     }
 
     private void LoadChunk(Vector2Int _chunk_pos)
