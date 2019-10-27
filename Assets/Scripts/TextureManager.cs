@@ -41,6 +41,7 @@ public class TextureManager
             if (sea_material == null)
             {
                 sea_material = Resources.Load<Material>("Materials/Water");
+                sea_material.mainTextureScale = new Vector2(World.SEA_TILE_SIZE, World.SEA_TILE_SIZE);
             }
             return sea_material;
         }

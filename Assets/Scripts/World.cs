@@ -11,18 +11,13 @@ public class World
     public static int SEA_LEVEL = 24;
     public static float NOISE_SCALE = 27.6f;
     public static int RENDER_DISTANCE = 3;
+    public static int SEA_RENDER_DISTANCE = 1;
+    public static int SEA_TILE_SIZE = 612;
     public static System.Random random = new System.Random(); //Can take seed
-    private GameObject Sea;
-
     ChunkManager chunk_manager = new ChunkManager();
 
     public World()
     {
-        // Create Sea
-        Sea = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        Sea.transform.position = Vector3.zero;
-        Sea.transform.localScale = new Vector3(100, 100, 100);
-        Sea.GetComponent<MeshRenderer>().material = TextureManager.Sea_Material;
     }
     public void UpdateWorld()
     {
@@ -35,11 +30,16 @@ public class World
         chunk_manager.UpdateChunks();
 
         // Simulate Sea
-        Sea.transform.position = new Vector3(
-            Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.25f, 0.1f) / 2.0f, // Main Waves
-            World.SEA_LEVEL - 0.05f - Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.25f, 0.2f) / 3.0f,
-            Mathf.PerlinNoise(1.0f, Time.timeSinceLevelLoad * 0.25f) / 4.0f // Ripples
-            );
+        foreach (KeyValuePair<Vector2Int, GameObject> sea_tile in chunk_manager.Ocean_Tiles)
+        {
+            Vector3 offset = new Vector3(
+                Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.25f, 0.1f) / 2.0f, // Main Waves
+                World.SEA_LEVEL - 0.05f - Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.25f, 0.2f) / 3.0f,
+                Mathf.PerlinNoise(1.0f, Time.timeSinceLevelLoad * 0.25f) / 4.0f // Ripples
+                );
+
+            sea_tile.Value.transform.position = new Vector3(sea_tile.Key.x * SEA_TILE_SIZE, 0.0f, sea_tile.Key.y * SEA_TILE_SIZE) + offset;
+        }
     }
 
     private void CullHiddenFaces(Chunk _chunk)
