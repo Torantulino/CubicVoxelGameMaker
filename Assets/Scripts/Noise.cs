@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,5 +47,14 @@ public static class Noise
             height = min_value;
 
         return (int)height;
+    }
+
+    public static Vector3 GetSeaOffset()
+    {
+        return new Vector3(
+                Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.25f, 0.1f) / 2.0f, // Main Waves
+                - 0.05f - Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.25f, 0.2f) / 3.0f,
+                Mathf.PerlinNoise(1.0f, Time.timeSinceLevelLoad * 0.25f) / 4.0f // Ripples
+                );
     }
 }

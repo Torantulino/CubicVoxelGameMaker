@@ -8,11 +8,12 @@ public class World
 {
     public static int CHUNK_SIZE = 16;
     public static int WORLD_HEIGHT = 64;
-    public static int SEA_LEVEL = 24;
+    public static int SEA_LEVEL = 16;
     public static float NOISE_SCALE = 27.6f;
-    public static int RENDER_DISTANCE = 3;
+    public static int RENDER_DISTANCE = 6;
     public static int SEA_RENDER_DISTANCE = 1;
     public static int SEA_TILE_SIZE = 612;
+    public static bool ISLANDS = true;
     public static System.Random random = new System.Random(); //Can take seed
     ChunkManager chunk_manager = new ChunkManager();
 
@@ -32,13 +33,9 @@ public class World
         // Simulate Sea
         foreach (KeyValuePair<Vector2Int, GameObject> sea_tile in chunk_manager.Ocean_Tiles)
         {
-            Vector3 offset = new Vector3(
-                Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.25f, 0.1f) / 2.0f, // Main Waves
-                World.SEA_LEVEL - 0.05f - Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.25f, 0.2f) / 3.0f,
-                Mathf.PerlinNoise(1.0f, Time.timeSinceLevelLoad * 0.25f) / 4.0f // Ripples
-                );
+            Vector3 offset = Noise.GetSeaOffset();
 
-            sea_tile.Value.transform.position = new Vector3(sea_tile.Key.x * SEA_TILE_SIZE, 0.0f, sea_tile.Key.y * SEA_TILE_SIZE) + offset;
+            sea_tile.Value.transform.position = new Vector3(sea_tile.Key.x * SEA_TILE_SIZE, World.SEA_LEVEL, sea_tile.Key.y * SEA_TILE_SIZE) + offset;
         }
     }
 
