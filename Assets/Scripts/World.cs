@@ -10,10 +10,10 @@ public class World
     public static int WORLD_HEIGHT = 64;
     public static int SEA_LEVEL = 16;
     public static float NOISE_SCALE = 27.6f;
-    public static int RENDER_DISTANCE = 6;
+    public static int RENDER_DISTANCE = 4;
     public static int SEA_RENDER_DISTANCE = 1;
     public static int SEA_TILE_SIZE = 612;
-    public static bool ISLANDS = false;
+    public static bool ISLANDS = true;
     public static System.Random random = new System.Random(); //Can take seed
     ChunkManager chunk_manager = new ChunkManager();
 
