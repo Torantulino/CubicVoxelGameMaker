@@ -13,7 +13,7 @@ public class World
     public static int RENDER_DISTANCE = 6;
     public static int SEA_RENDER_DISTANCE = 1;
     public static int SEA_TILE_SIZE = 612;
-    public static bool ISLANDS = true;
+    public static bool ISLANDS = false;
     public static System.Random random = new System.Random(); //Can take seed
     ChunkManager chunk_manager = new ChunkManager();
 
@@ -237,6 +237,7 @@ public class World
                 if(!block.Faces[i].Render)
                     continue;
 
+                //TODO: Achieve mesh combination without first creating individual Meshes for large optimisation
                 combine_meshes[current_mesh_iterator].mesh = new Mesh();
                 combine_meshes[current_mesh_iterator].mesh.vertices = block.Faces[i].Vertices;
                 combine_meshes[current_mesh_iterator].mesh.triangles = block.Faces[i].Triangles;
