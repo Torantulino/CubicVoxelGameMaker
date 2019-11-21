@@ -223,38 +223,65 @@ public class World
             }
         }
 
-        // Iterate over every mesh in chunk and add to collection
-        CombineInstance[] combine_meshes = new CombineInstance[no_faces];
-        int current_mesh_iterator = 0;
-        foreach (Block block in _chunk.blocks)
+        // Iterate over every mesh in chunk, 
+        // manually building up a single combined mesh
+        Mesh combined_mesh = new Mesh();
         {
-            // Disregard Air
-            if(block.type == (int)BlockInfo.BlockType.Air)
-                continue;
-
-            for (int i = 0; i < block.Faces.Length; i++)
+            List<Vector3> combined_vertices = new List<Vector3>();
+            List<int> combined_triangles = new List<int>();
+            List<Vector3> combined_normals = new List<Vector3>();
+            List<Vector3> combined_uvs = new List<Vector3>();
+            int current_mesh_iterator = 0;
+            foreach (Block block in _chunk.blocks)
             {
-                if(!block.Faces[i].Render)
+                // Disregard Air
+                if (block.type == (int)BlockInfo.BlockType.Air)
                     continue;
 
-                //TODO: Achieve mesh combination without first creating individual Meshes for large optimisation
-                combine_meshes[current_mesh_iterator].mesh = new Mesh();
-                combine_meshes[current_mesh_iterator].mesh.vertices = block.Faces[i].Vertices;
-                combine_meshes[current_mesh_iterator].mesh.triangles = block.Faces[i].Triangles;
-                combine_meshes[current_mesh_iterator].mesh.normals = block.Faces[i].Normals;
-                combine_meshes[current_mesh_iterator].mesh.SetUVs(0, block.Faces[i].UVs);
+                for (int i = 0; i < block.Faces.Length; i++)
+                {
+                    if (!block.Faces[i].Render)
+                        continue;
 
-                //Matrix4x4.Translate(block.Position)
-                combine_meshes[current_mesh_iterator].transform = Matrix4x4.Translate(block.Position);//.localToWorldMatrix;
-                current_mesh_iterator++;
+                    // Add transformed vertex data
+                    Vector3[] _vertices = new Vector3[4];
+                    int v = 0;
+                    foreach (Vector3 vert in block.Faces[i].Vertices)
+                    {
+                        _vertices[v] = vert + block.Position;
+                        v++;
+                    }
+                    combined_vertices.AddRange(_vertices);
+
+                    // Reindex triangles
+                    int[] _triangles = new int[6];
+                    int t = 0;
+                    foreach (int tri in block.Faces[i].Triangles)
+                    {
+                        _triangles[t] = tri + (4 * current_mesh_iterator);
+                        t++;
+                    }
+                    combined_triangles.AddRange(_triangles);
+
+                    // combine normals and add UVs to combined lists
+                    combined_normals.AddRange(block.Faces[i].Normals);
+                    combined_uvs.AddRange(block.Faces[i].UVs);
+
+                    current_mesh_iterator++;
+                }
             }
-        }
 
+            // Apply combined data to mesh
+            combined_mesh.vertices = combined_vertices.ToArray();
+            combined_mesh.triangles = combined_triangles.ToArray();
+            combined_mesh.normals = combined_normals.ToArray();
+            combined_mesh.SetUVs(0, combined_uvs);
+        }
         GameObject chunk_object;
         MeshRenderer mesh_renderer;
         MeshFilter mesh_filter;
 
-        // If Chunk is loaded, update
+        // If Chunk GameObject is already instantiated: Update
         if(chunk_manager.Chunk_GameObjects.ContainsKey(_chunk.Position))
         {
             // Get Gameobject
@@ -266,7 +293,7 @@ public class World
             // Delete old mesh
             UnityEngine.Object.Destroy(mesh_filter.mesh);
         }
-        // Else create
+        // Else: Instantiate new GameObject
         else
         {
             // Create Gameobject
@@ -276,18 +303,11 @@ public class World
             mesh_filter = chunk_object.AddComponent<MeshFilter>();
         }
 
-        // Position
+        // Position chunk
         chunk_object.transform.position = new Vector3(_chunk.Position.x * World.CHUNK_SIZE, 0.0f, _chunk.Position.y * World.CHUNK_SIZE);
 
         // Combine meshes into single mesh
-        mesh_filter.mesh = new Mesh();
-        mesh_filter.mesh.CombineMeshes(combine_meshes, true);
-
-        // Delete old meshes
-        for(int i=0; i< no_faces; i++)
-        {
-            UnityEngine.Object.Destroy(combine_meshes[i].mesh);
-        }
+        mesh_filter.mesh = combined_mesh;
         
         // Set material
         mesh_renderer.material = TextureManager.Block_Material;
