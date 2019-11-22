@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -301,6 +301,9 @@ public class World
             // Add Components
             mesh_renderer = chunk_object.AddComponent<MeshRenderer>();
             mesh_filter = chunk_object.AddComponent<MeshFilter>();
+            // Set component properties
+            mesh_renderer.receiveShadows = false;
+            mesh_renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
         // Position chunk
