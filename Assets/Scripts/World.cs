@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Profiling;
 using UnityEngine;
 
 
@@ -41,11 +42,13 @@ public class World
 
     private void CullHiddenFaces(Chunk _chunk)
     {
+        ProfilerMarker CullHiddenFacesMarker = new ProfilerMarker("CullHiddenFaces()");
+
         if (!_chunk.has_loaded || !_chunk.needs_updating)
             return;
 
         // Unload chunk
-        if(_chunk.unload)
+        if (_chunk.unload)
         {
             // Destroy Game Object (If unloading before creation is complete return until loaded)
             if (!chunk_manager.Chunk_GameObjects.ContainsKey(_chunk.Position))
@@ -64,6 +67,7 @@ public class World
             return;
         }
 
+        CullHiddenFacesMarker.Begin();
         // Check 
         for (int x = 0; x < CHUNK_SIZE; x++)
         {
@@ -199,11 +203,15 @@ public class World
             }
         }
 
+        CullHiddenFacesMarker.End();
         CombineMeshes(_chunk);
     }
 
     private void CombineMeshes(Chunk _chunk)
     {
+        ProfilerMarker CombineMeshesMarker = new ProfilerMarker("CombineMeshes()");
+        CombineMeshesMarker.Begin();
+
         // Obtain references
         LevelManager level_manager = GameObject.FindObjectOfType<LevelManager>();
 
@@ -244,24 +252,12 @@ public class World
                         continue;
 
                     // Add transformed vertex data
-                    Vector3[] _vertices = new Vector3[4];
-                    int v = 0;
                     foreach (Vector3 vert in block.Faces[i].Vertices)
-                    {
-                        _vertices[v] = vert + block.Position;
-                        v++;
-                    }
-                    combined_vertices.AddRange(_vertices);
+                        combined_vertices.Add(vert + block.Position);
 
                     // Reindex triangles
-                    int[] _triangles = new int[6];
-                    int t = 0;
                     foreach (int tri in block.Faces[i].Triangles)
-                    {
-                        _triangles[t] = tri + (4 * current_mesh_iterator);
-                        t++;
-                    }
-                    combined_triangles.AddRange(_triangles);
+                        combined_triangles.Add(tri + (4 * current_mesh_iterator));
 
                     // combine normals and add UVs to combined lists
                     combined_normals.AddRange(block.Faces[i].Normals);
@@ -277,6 +273,7 @@ public class World
             combined_mesh.normals = combined_normals.ToArray();
             combined_mesh.SetUVs(0, combined_uvs);
         }
+
         GameObject chunk_object;
         MeshRenderer mesh_renderer;
         MeshFilter mesh_filter;
@@ -320,5 +317,7 @@ public class World
 
         // Set flag to show chunk is up-to-date
         _chunk.needs_updating = false;
+
+        CombineMeshesMarker.End();
     }
 }
