@@ -11,7 +11,7 @@ public class World
     public static int WORLD_HEIGHT = 64;
     public static int SEA_LEVEL = 16;
     public static float NOISE_SCALE = 27.6f;
-    public static int RENDER_DISTANCE = 4;
+    public static int RENDER_DISTANCE = 2;
     public static int SEA_RENDER_DISTANCE = 1;
     public static int SEA_TILE_SIZE = 612;
     public static bool ISLANDS = true;
@@ -277,6 +277,7 @@ public class World
         GameObject chunk_object;
         MeshRenderer mesh_renderer;
         MeshFilter mesh_filter;
+        MeshCollider chunk_collider;
 
         // If Chunk GameObject is already instantiated: Update
         if(chunk_manager.Chunk_GameObjects.ContainsKey(_chunk.Position))
@@ -286,6 +287,7 @@ public class World
             // Get Components
             mesh_renderer = chunk_manager.Chunk_GameObjects[_chunk.Position].GetComponent<MeshRenderer>();
             mesh_filter = chunk_manager.Chunk_GameObjects[_chunk.Position].GetComponent<MeshFilter>();
+            chunk_collider = chunk_manager.Chunk_GameObjects[_chunk.Position].GetComponent<MeshCollider>();
 
             // Delete old mesh
             UnityEngine.Object.Destroy(mesh_filter.mesh);
@@ -298,6 +300,8 @@ public class World
             // Add Components
             mesh_renderer = chunk_object.AddComponent<MeshRenderer>();
             mesh_filter = chunk_object.AddComponent<MeshFilter>();
+            chunk_collider = chunk_object.AddComponent<MeshCollider>();
+
             // Set component properties
             mesh_renderer.receiveShadows = false;
             mesh_renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -311,6 +315,9 @@ public class World
         
         // Set material
         mesh_renderer.material = TextureManager.Block_Material;
+
+        chunk_collider.cookingOptions = MeshColliderCookingOptions.None;
+        chunk_collider.sharedMesh = mesh_filter.mesh;
 
         // Add GameObject to collection
         chunk_manager.Chunk_GameObjects[_chunk.Position] = chunk_object;
