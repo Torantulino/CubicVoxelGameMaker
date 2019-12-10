@@ -15,9 +15,9 @@ public class PlayerController : MonoBehaviour
     {
         //Screen_Overlay = transform.GetChild(0).gameObject;
         //Screen_Overlay.transform.gameObject.transform.localScale =
-            new Vector3(2.0f, World.SEA_LEVEL, 1.0f);
+        new Vector3(2.0f, World.SEA_LEVEL, 1.0f);
         //Screen_Overlay.GetComponent<MeshRenderer>().material.mainTextureScale =
-            new Vector2(2.0f, World.SEA_LEVEL);
+        new Vector2(2.0f, World.SEA_LEVEL);
 
 
     }
@@ -35,9 +35,35 @@ public class PlayerController : MonoBehaviour
     {
         // Head Movement
         //TODO: Could Lerp here for smoothness? Optional?
-        float newRotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * Config.LOOK_SENSITIVITY;
-        float newRotationY = transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * Config.LOOK_SENSITIVITY;
-        transform.localEulerAngles = new Vector3(newRotationY, newRotationX, 0f);
+        float new_rotation_x = transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * Config.LOOK_SENSITIVITY;
+        float new_rotation_y = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * Config.LOOK_SENSITIVITY;
+        transform.localEulerAngles = new Vector3(new_rotation_x, new_rotation_y, 0.0f);
+
+        // Block Breaking
+        // Left Click
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Debug Ray
+            Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * Config.PLAYER_REACH, Color.magenta, 1.0f);
+
+            // Define ray forwards through camera
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            RaycastHit hit_data;
+
+            // Raycast, and return true if an object in layer 'Blocks' was hit within range
+            if (Physics.Raycast(ray, out hit_data, Config.PLAYER_REACH, LayerMask.GetMask("Blocks")))
+            {
+
+                // Get block position
+                Vector3 normal = hit_data.normal;
+                Vector3 point = hit_data.point;
+
+                Vector3 hit_block_pos = GetHitBlock(normal, point);
+
+                
+                Debug.Log("Hit block pos: " + hit_block_pos);
+            }
+        }
 
         // Player Movement
         // Move Forwards
@@ -63,7 +89,7 @@ public class PlayerController : MonoBehaviour
         // No Movement Related Input
         if (!Input.GetKey(Config.MOVE_FORWARDS) && !Input.GetKey(Config.MOVE_BACKWARDS) && !Input.GetKey(Config.MOVE_LEFT) && !Input.GetKey(Config.MOVE_RIGHT))
         {
-            if(touching_ground)
+            if (touching_ground)
             {
                 //Stop
             }
@@ -71,7 +97,7 @@ public class PlayerController : MonoBehaviour
         // Jump
         if (Input.GetKey(Config.JUMP))
         {
-            if(touching_ground && jumps_remaining > 0)
+            if (touching_ground && jumps_remaining > 0)
             {
                 Vector3 velocity = Vector3.zero;
                 velocity += Vector3.up * Config.JUMP_POWER;
@@ -81,15 +107,48 @@ public class PlayerController : MonoBehaviour
 
                 //GetComponent<Rigidbody>().AddForce(Vector3.up * Config.JUMP_POWER);
             }
-            
+
         }
         else
-                touching_ground = true; //TODO: IMPLEMENT PROPERLY;
+            touching_ground = true; //TODO: IMPLEMENT PROPERLY;
 
 
 
     }
 
+    // Gets the position of the block that was hit by raycast at _point on face with _normal
+    private Vector3 GetHitBlock(Vector3 _normal, Vector3 _point)
+    {
+        // Isolate the compononet along the normal vector
+        Vector3 p_n = Vector3.Scale(_point, _normal);
+        Vector3 point_normal_axis = new Vector3(
+            (_normal.x == 0) ? 0 : p_n.x / _normal.x,
+            (_normal.y == 0) ? 0 : p_n.y / _normal.y,
+            (_normal.z == 0) ? 0 : p_n.z / _normal.z);
+
+        // Isolate the remaining axes
+        Vector3 point_other_axes = _point - point_normal_axis;
+
+        // Calculate normal component of block position
+        Vector3 block_pos_normal_axis = point_normal_axis - (_normal / 2.0f);
+
+        // Calculate other components of block position
+        Vector3 block_pos_other_axes = new Vector3(
+            Mathf.Round(point_other_axes.x + 0.5f) - 0.5f,
+            Mathf.Round(point_other_axes.y + 0.5f) - 0.5f,
+            Mathf.Round(point_other_axes.z + 0.5f) - 0.5f);
+
+        // Combine
+        Vector3 hit_block_pos = block_pos_normal_axis + block_pos_other_axes;
+
+        // Cancel out negative 0.5f offset along normal axis 
+        hit_block_pos += new Vector3(
+            Mathf.Abs(_normal.x / 2.0f),
+            Mathf.Abs(_normal.y / 2.0f),
+            Mathf.Abs(_normal.z / 2.0f));
+
+        return hit_block_pos;
+    }
     private void SimulateCameraEffects()
     {
         Vector3 sea_offset = Noise.GetSeaOffset();

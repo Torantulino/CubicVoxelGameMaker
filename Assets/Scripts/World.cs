@@ -302,9 +302,13 @@ public class World
             mesh_filter = chunk_object.AddComponent<MeshFilter>();
             chunk_collider = chunk_object.AddComponent<MeshCollider>();
 
-            // Set component properties
+            // Set one-time component properties
             mesh_renderer.receiveShadows = false;
             mesh_renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            chunk_collider.cookingOptions = MeshColliderCookingOptions.None;
+            
+            // Assign object to 'Blocks' layer
+            chunk_object.layer = LayerMask.NameToLayer("Blocks");
         }
 
         // Position chunk
@@ -316,7 +320,7 @@ public class World
         // Set material
         mesh_renderer.material = TextureManager.Block_Material;
 
-        chunk_collider.cookingOptions = MeshColliderCookingOptions.None;
+        // Set collider data
         chunk_collider.sharedMesh = mesh_filter.mesh;
 
         // Add GameObject to collection

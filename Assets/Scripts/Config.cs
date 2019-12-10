@@ -21,6 +21,7 @@ public class Config : MonoBehaviour
     public static float MOVEMENT_SPEED = 5.0f;
     public static float JUMP_POWER = 7.5f;
     public static float STEP_HEIGHT = 1.0f; // IMPLEMENT
+    public static float PLAYER_REACH = 10.0f;
 
     // GRAPHCS SETTINGS
     public static int FOV;
