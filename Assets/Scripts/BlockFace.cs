@@ -21,7 +21,7 @@ public class BlockFace
             new Vector3(1.0f, 1.0f, 1.0f)  //7
     };
 
-    public BlockFace(Material _material, int _type, Vector3 _normal)
+    public BlockFace(int _type, Vector3 _normal)
     {
         // Set vertices
         // RIGHT

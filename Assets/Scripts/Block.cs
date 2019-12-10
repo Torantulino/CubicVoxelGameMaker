@@ -27,7 +27,6 @@ public class Block
         for (int i = 0; i < 6; i++)
         {
             BlockFace _face = new BlockFace(
-                TextureManager.Block_Material,
                 BlockInfo.Face_Textures[_type, i],
                 BlockInfo.normals[i]
             );
