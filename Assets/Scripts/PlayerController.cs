@@ -43,9 +43,9 @@ public class PlayerController : MonoBehaviour
         float new_rotation_y = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * Config.LOOK_SENSITIVITY;
         transform.localEulerAngles = new Vector3(new_rotation_x, new_rotation_y, 0.0f);
 
-        // Block Breaking
+        // Block Breaking / Placing
         // Left Click
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
             // Debug Ray
             Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * Config.PLAYER_REACH, Color.magenta, 1.0f);
@@ -57,7 +57,6 @@ public class PlayerController : MonoBehaviour
             // Raycast, and return true if an object in layer 'Blocks' was hit within range
             if (Physics.Raycast(ray, out hit_data, Config.PLAYER_REACH, LayerMask.GetMask("Blocks")))
             {
-
                 // Get position of hit block
                 Vector3 hit_block_pos = GetHitBlock(hit_data.normal, hit_data.point);
 
@@ -66,17 +65,22 @@ public class PlayerController : MonoBehaviour
                     = new Vector2Int(Mathf.FloorToInt(hit_block_pos.x / World.CHUNK_SIZE),
                                   Mathf.FloorToInt(hit_block_pos.z / World.CHUNK_SIZE));
 
-                // Round towards 0 by employing c#'s casting behaviour
-                //Vector3Int hit_block = new Vector3Int( (int)(hit_block_pos.x / World.CHUNK_SIZE), (int)(hit_block_pos.y / World.CHUNK_SIZE), (int)(hit_block_pos.z / World.CHUNK_SIZE) );
+                // Get origin (position) of hit chunk in world
                 Vector2 chunk_pos = hit_chunk * World.CHUNK_SIZE;
 
-                Vector3Int hit_block = new Vector3Int( Mathf.FloorToInt(hit_block_pos.x - chunk_pos.x), Mathf.FloorToInt(hit_block_pos.y), Mathf.FloorToInt(hit_block_pos.z - chunk_pos.y));
-
-                chunk_manager.SetBlock((int) BlockInfo.BlockType.Air, hit_chunk, hit_block);
-
-                Debug.Log("Hit block pos: " + hit_block_pos + " In chunk: " + hit_chunk);
+                // Get coords of hit block within parent chunk
+                Vector3Int hit_block = new Vector3Int(Mathf.FloorToInt(hit_block_pos.x - chunk_pos.x), Mathf.FloorToInt(hit_block_pos.y), Mathf.FloorToInt(hit_block_pos.z - chunk_pos.y));
 
 
+                // Block Building (Right Click)
+                if (Input.GetMouseButtonDown(1))
+                {
+                    chunk_manager.SetBlock((int)BlockInfo.BlockType.Light_Stone, hit_chunk, new Vector3Int((int)(hit_block.x + hit_data.normal.x),
+                     (int)(hit_block.y + hit_data.normal.y), (int)(hit_block.z + hit_data.normal.z)));
+                }
+                // Block Breaking (Left Click)
+                else
+                    chunk_manager.SetBlock((int)BlockInfo.BlockType.Air, hit_chunk, hit_block);
             }
         }
 
