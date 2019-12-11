@@ -109,14 +109,7 @@ public class PlayerController : MonoBehaviour
         {
             player_rigidbody.position = transform.position + (-transform.forward * Config.MOVEMENT_SPEED * Time.deltaTime);
         }
-        // No Movement Related Input
-        if (!Input.GetKey(Config.MOVE_FORWARDS) && !Input.GetKey(Config.MOVE_BACKWARDS) && !Input.GetKey(Config.MOVE_LEFT) && !Input.GetKey(Config.MOVE_RIGHT))
-        {
-            if (touching_ground)
-            {
-                //Stop
-            }
-        }
+
         // Jump
         if (Input.GetKey(Config.JUMP) && (touching_ground || swimming) && Time.realtimeSinceStartup - last_jump_time > Config.JUMP_INTERVAL)
         {
