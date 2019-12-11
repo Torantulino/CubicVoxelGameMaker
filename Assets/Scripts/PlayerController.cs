@@ -7,13 +7,15 @@ public class PlayerController : MonoBehaviour
     public GameObject Screen_Overlay;
     public GameObject head;
     public GameObject body;
-    private bool touching_ground = true;    //TODO: Implement
+    private bool touching_ground = true;
     private int jumps_remaining = 2;
 
     private Rigidbody player_rigidbody;
 
     private LevelManager level_manager;
     private ChunkManager chunk_manager;
+    bool swimming = false;
+    float last_jump_time;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +35,8 @@ public class PlayerController : MonoBehaviour
 
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
+
+        player_rigidbody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -41,11 +45,91 @@ public class PlayerController : MonoBehaviour
 
         PlayerControlAndResponse();
         //SimulateCameraEffects();      //TODO: MOVE TO CAMERA EFFECTS SPECIFIC CLASS ON MAIN CAMERA
-        player_rigidbody = GetComponent<Rigidbody>();
+
 
         // UnLock cursor
         if (Input.GetKey(KeyCode.Escape))
             Cursor.lockState = CursorLockMode.None;
+
+        // Check if under water-line
+        swimming = transform.position.y - Config.PLAYER_HEIGHT / 2.0f < World.SEA_LEVEL + Noise.GetSeaOffset().y;
+
+
+        if (swimming)
+        {
+            if (Mathf.Abs(player_rigidbody.velocity.y) > Config.MAX_WATER_VELOCITY)
+                player_rigidbody.velocity = new Vector3(player_rigidbody.velocity.x, Mathf.Sign(player_rigidbody.velocity.y) * Config.MAX_WATER_VELOCITY, player_rigidbody.velocity.z);
+
+            Physics.gravity = new Vector3(0.0f, Config.GRAVITY / 10.0f, 0.0f);
+        }
+        else
+            Physics.gravity = new Vector3(0.0f, Config.GRAVITY, 0.0f);
+    }
+
+    void FixedUpdate()
+    {
+        PlayerPhysicsControlAndResponse();
+    }
+    void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Blocks"))
+            return;
+
+        touching_ground = true;
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Blocks"))
+            return;
+
+        touching_ground = false;
+    }
+
+    private void PlayerPhysicsControlAndResponse()
+    {
+        // Player Movement
+        // Move Forwards
+        if (Input.GetKey(Config.MOVE_FORWARDS))
+        {
+            player_rigidbody.position = transform.position + (transform.forward * Config.MOVEMENT_SPEED * Time.deltaTime);
+        }
+        // Move Left
+        if (Input.GetKey(Config.MOVE_LEFT))
+        {
+            player_rigidbody.position = transform.position + (-transform.right * Config.MOVEMENT_SPEED * Time.deltaTime);
+        }
+        // Move Right
+        if (Input.GetKey(Config.MOVE_RIGHT))
+        {
+            player_rigidbody.position = transform.position + (transform.right * Config.MOVEMENT_SPEED * Time.deltaTime);
+        }
+        // Move Back
+        if (Input.GetKey(Config.MOVE_BACKWARDS))
+        {
+            player_rigidbody.position = transform.position + (-transform.forward * Config.MOVEMENT_SPEED * Time.deltaTime);
+        }
+        // No Movement Related Input
+        if (!Input.GetKey(Config.MOVE_FORWARDS) && !Input.GetKey(Config.MOVE_BACKWARDS) && !Input.GetKey(Config.MOVE_LEFT) && !Input.GetKey(Config.MOVE_RIGHT))
+        {
+            if (touching_ground)
+            {
+                //Stop
+            }
+        }
+        // Jump
+        if (Input.GetKey(Config.JUMP) && (touching_ground || swimming) && Time.realtimeSinceStartup - last_jump_time > Config.JUMP_INTERVAL)
+        {
+            if (jumps_remaining > 0)
+            {
+                Vector3 velocity = Vector3.zero;
+                velocity += Vector3.up * Config.JUMP_POWER;
+                player_rigidbody.velocity = velocity;
+
+                touching_ground = false;
+            }
+            last_jump_time = Time.realtimeSinceStartup;
+        }
     }
 
     private void PlayerControlAndResponse()
@@ -70,7 +154,6 @@ public class PlayerController : MonoBehaviour
             transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y + head.transform.localEulerAngles.y, 0.0f);
             head.transform.localEulerAngles = new Vector3(head.transform.localEulerAngles.x, 0.0f, 0.0f);
         }
-
 
         // Block Breaking / Placing
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
@@ -161,55 +244,6 @@ public class PlayerController : MonoBehaviour
                     chunk_manager.SetBlock((int)BlockInfo.BlockType.Air, hit_chunk, hit_block);
             }
         }
-
-        // Player Movement
-        // Move Forwards
-        if (Input.GetKey(Config.MOVE_FORWARDS))
-        {
-            transform.position = transform.position + (transform.forward * Config.MOVEMENT_SPEED * Time.deltaTime);
-        }
-        // Move Left
-        if (Input.GetKey(Config.MOVE_LEFT))
-        {
-            transform.position = transform.position + (-transform.right * Config.MOVEMENT_SPEED * Time.deltaTime);
-        }
-        // Move Right
-        if (Input.GetKey(Config.MOVE_RIGHT))
-        {
-            transform.position = transform.position + (transform.right * Config.MOVEMENT_SPEED * Time.deltaTime);
-        }
-        // Move Back
-        if (Input.GetKey(Config.MOVE_BACKWARDS))
-        {
-            transform.position = transform.position + (-transform.forward * Config.MOVEMENT_SPEED * Time.deltaTime);
-        }
-        // No Movement Related Input
-        if (!Input.GetKey(Config.MOVE_FORWARDS) && !Input.GetKey(Config.MOVE_BACKWARDS) && !Input.GetKey(Config.MOVE_LEFT) && !Input.GetKey(Config.MOVE_RIGHT))
-        {
-            if (touching_ground)
-            {
-                //Stop
-            }
-        }
-        // Jump
-        if (Input.GetKey(Config.JUMP))
-        {
-            if (touching_ground && jumps_remaining > 0)
-            {
-                Vector3 velocity = Vector3.zero;
-                velocity += Vector3.up * Config.JUMP_POWER;
-                player_rigidbody.velocity = velocity;
-
-                touching_ground = false;
-
-                //GetComponent<Rigidbody>().AddForce(Vector3.up * Config.JUMP_POWER);
-            }
-
-        }
-        else
-            touching_ground = true; //TODO: IMPLEMENT PROPERLY;
-
-
 
     }
 
