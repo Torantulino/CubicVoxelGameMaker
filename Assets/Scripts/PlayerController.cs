@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,6 +52,14 @@ public class PlayerController : MonoBehaviour
         //TODO: Could Lerp here for smoothness? Optionally?
         float new_rotation_x = Head.transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * Config.LOOK_SENSITIVITY;
         float new_rotation_y = Head.transform.localEulerAngles.y + Input.GetAxis("Mouse X") * Config.LOOK_SENSITIVITY;
+        // Enforce limits
+        // 0 == Straight Ahead
+        // 90 == Down etc.
+        if(new_rotation_x < 275.0f && new_rotation_x > 150.0f)
+            new_rotation_x = 275.0f;
+        if(new_rotation_x > 85.0f && new_rotation_x < 150.0f)
+            new_rotation_x = 85.0f;
+
         Head.transform.localEulerAngles = new Vector3(new_rotation_x, new_rotation_y, 0.0f);
 
         // // If not holding freelook key, rotate body with head around y axis

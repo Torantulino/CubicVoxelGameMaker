@@ -192,12 +192,12 @@ public class ChunkManager
             Modified_Chunks[chunk] = new_chunk;
         }
 
-        // Add new blockwd
+        // Add new block
         Modified_Chunks[chunk].blocks[block.x, block.y, block.z] = new Block(_type, new Vector3(block.x, block.y, block.z));
 
-        // Set flags    TODO: Set flags on adjacent chunks if edge block modified
+        // Set update flags
+        // This chunk
         Chunks[chunk].needs_updating = true;
-
         // Positive X
         if (block.x == World.CHUNK_SIZE - 1)
             Chunks[new Vector2Int(chunk.x + 1, chunk.y)].needs_updating = true;
