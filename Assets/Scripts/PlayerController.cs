@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -100,9 +100,53 @@ public class PlayerController : MonoBehaviour
 
                 // Block Building (Right Click)
                 if (Input.GetMouseButtonDown(1))
-                {
-                    chunk_manager.SetBlock((int)BlockInfo.BlockType.Light_Stone, hit_chunk, new Vector3Int((int)(hit_block.x + hit_data.normal.x),
-                     (int)(hit_block.y + hit_data.normal.y), (int)(hit_block.z + hit_data.normal.z)));
+                {   
+                    int new_block_x = hit_block.x + (int)hit_data.normal.x;
+                    int new_block_y = hit_block.y + (int)hit_data.normal.y;
+                    int new_block_z = hit_block.z + (int)hit_data.normal.z;
+                    int new_chunk_x = hit_chunk.x;
+                    int new_chunk_z = hit_chunk.y;
+
+                    // Positive X Edge
+                    if(new_block_x >= World.CHUNK_SIZE)
+                    {
+                        new_chunk_x ++;
+                        new_block_x = 0;
+                    }
+                    // Negative X Edge
+                    else if(new_block_x < 0)
+                    {
+                        new_chunk_x --;
+                        new_block_x = World.CHUNK_SIZE-1;
+                    }
+                    
+                    // Positive Z Edge
+                    if(new_block_z >= World.CHUNK_SIZE)
+                    {
+                        new_chunk_z ++;
+                        new_block_z = 0;
+                    }
+                    // Negative Z Edge
+                    else if(new_block_z < 0)
+                    {
+                        new_chunk_z --;
+                        new_block_z = World.CHUNK_SIZE-1;
+                    }
+
+                    // Height Limit
+                    if (new_block_y >= World.WORLD_HEIGHT)
+                        return; // Disregard blocks placed above world limit. Could play sound effect here.
+
+                    // Apply changes 
+                    Vector3Int new_block_pos = new Vector3Int(
+                        new_block_x,
+                        new_block_y, 
+                        new_block_z
+                    );
+                    Vector2Int new_chunk_pos = new Vector2Int(new_chunk_x, new_chunk_z);
+
+                    // Place block
+                    chunk_manager.SetBlock((int)BlockInfo.BlockType.Light_Stone, new_chunk_pos, new_block_pos);
                 }
                 // Block Breaking (Left Click)
                 else
