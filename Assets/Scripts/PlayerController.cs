@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public GameObject Screen_Overlay;
-    public GameObject Head;
+    public GameObject head;
+    public GameObject body;
     private bool touching_ground = true;    //TODO: Implement
     private int jumps_remaining = 2;
 
@@ -26,8 +27,9 @@ public class PlayerController : MonoBehaviour
         level_manager = FindObjectOfType<LevelManager>();
         chunk_manager = level_manager.Chunk_Manager;
 
-        // Find head
-        Head = GameObject.Find("Head");
+        // Locate body parts!
+        head = GameObject.Find("Head");
+        body = GameObject.Find("Body");
 
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
@@ -42,7 +44,7 @@ public class PlayerController : MonoBehaviour
         player_rigidbody = GetComponent<Rigidbody>();
 
         // UnLock cursor
-        if(Input.GetKey(KeyCode.Escape))
+        if (Input.GetKey(KeyCode.Escape))
             Cursor.lockState = CursorLockMode.None;
     }
 
@@ -50,23 +52,23 @@ public class PlayerController : MonoBehaviour
     {
         // Head Movement
         //TODO: Could Lerp here for smoothness? Optionally?
-        float new_rotation_x = Head.transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * Config.LOOK_SENSITIVITY;
-        float new_rotation_y = Head.transform.localEulerAngles.y + Input.GetAxis("Mouse X") * Config.LOOK_SENSITIVITY;
+        float new_rotation_x = head.transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * Config.LOOK_SENSITIVITY;
+        float new_rotation_y = head.transform.localEulerAngles.y + Input.GetAxis("Mouse X") * Config.LOOK_SENSITIVITY;
         // Enforce limits
         // 0 == Straight Ahead
         // 90 == Down etc.
-        if(new_rotation_x < 275.0f && new_rotation_x > 150.0f)
+        if (new_rotation_x < 275.0f && new_rotation_x > 150.0f)
             new_rotation_x = 275.0f;
-        if(new_rotation_x > 85.0f && new_rotation_x < 150.0f)
+        if (new_rotation_x > 85.0f && new_rotation_x < 150.0f)
             new_rotation_x = 85.0f;
 
-        Head.transform.localEulerAngles = new Vector3(new_rotation_x, new_rotation_y, 0.0f);
+        head.transform.localEulerAngles = new Vector3(new_rotation_x, new_rotation_y, 0.0f);
 
         // // If not holding freelook key, rotate body with head around y axis
-        if(!Input.GetKey(Config.FREE_HEAD))
+        if (!Input.GetKey(Config.FREE_HEAD))
         {
-            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y + Head.transform.localEulerAngles.y, 0.0f);
-            Head.transform.localEulerAngles = new Vector3(Head.transform.localEulerAngles.x, 0.0f, 0.0f);
+            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y + head.transform.localEulerAngles.y, 0.0f);
+            head.transform.localEulerAngles = new Vector3(head.transform.localEulerAngles.x, 0.0f, 0.0f);
         }
 
 
@@ -100,7 +102,7 @@ public class PlayerController : MonoBehaviour
 
                 // Block Building (Right Click)
                 if (Input.GetMouseButtonDown(1))
-                {   
+                {
                     int new_block_x = hit_block.x + (int)hit_data.normal.x;
                     int new_block_y = hit_block.y + (int)hit_data.normal.y;
                     int new_block_z = hit_block.z + (int)hit_data.normal.z;
@@ -108,29 +110,29 @@ public class PlayerController : MonoBehaviour
                     int new_chunk_z = hit_chunk.y;
 
                     // Positive X Edge
-                    if(new_block_x >= World.CHUNK_SIZE)
+                    if (new_block_x >= World.CHUNK_SIZE)
                     {
-                        new_chunk_x ++;
+                        new_chunk_x++;
                         new_block_x = 0;
                     }
                     // Negative X Edge
-                    else if(new_block_x < 0)
+                    else if (new_block_x < 0)
                     {
-                        new_chunk_x --;
-                        new_block_x = World.CHUNK_SIZE-1;
+                        new_chunk_x--;
+                        new_block_x = World.CHUNK_SIZE - 1;
                     }
-                    
+
                     // Positive Z Edge
-                    if(new_block_z >= World.CHUNK_SIZE)
+                    if (new_block_z >= World.CHUNK_SIZE)
                     {
-                        new_chunk_z ++;
+                        new_chunk_z++;
                         new_block_z = 0;
                     }
                     // Negative Z Edge
-                    else if(new_block_z < 0)
+                    else if (new_block_z < 0)
                     {
-                        new_chunk_z --;
-                        new_block_z = World.CHUNK_SIZE-1;
+                        new_chunk_z--;
+                        new_block_z = World.CHUNK_SIZE - 1;
                     }
 
                     // Height Limit
@@ -140,13 +142,19 @@ public class PlayerController : MonoBehaviour
                     // Apply changes 
                     Vector3Int new_block_pos = new Vector3Int(
                         new_block_x,
-                        new_block_y, 
+                        new_block_y,
                         new_block_z
                     );
                     Vector2Int new_chunk_pos = new Vector2Int(new_chunk_x, new_chunk_z);
 
-                    // Place block
-                    chunk_manager.SetBlock((int)BlockInfo.BlockType.Light_Stone, new_chunk_pos, new_block_pos);
+                    // Check if block will be inside player
+                    // If not, place block. Could play sound effect on 'else'
+                    Bounds new_block_bounds = new Bounds(hit_block_pos + hit_data.normal, new Vector3(1.0f, 1.0f, 1.0f));
+                    if (!body.GetComponent<BoxCollider>().bounds.Intersects(new_block_bounds))
+                        // Place block
+                        chunk_manager.SetBlock((int)BlockInfo.BlockType.Light_Stone, new_chunk_pos, new_block_pos);
+                    else
+                        Debug.Log("PLAYER BLOCKING PLACEMENT!");
                 }
                 // Block Breaking (Left Click)
                 else
