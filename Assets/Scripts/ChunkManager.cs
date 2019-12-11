@@ -186,7 +186,7 @@ public class ChunkManager
     public void SetBlock(int _type, Vector2Int chunk, Vector3Int block)
     {
         // If first modification in this chunk, add neew dictionary entry
-        if(!Modified_Chunks.ContainsKey(chunk))
+        if (!Modified_Chunks.ContainsKey(chunk))
         {
             Chunk new_chunk = new Chunk(chunk, false);
             Modified_Chunks[chunk] = new_chunk;
@@ -197,5 +197,18 @@ public class ChunkManager
 
         // Set flags    TODO: Set flags on adjacent chunks if edge block modified
         Chunks[chunk].needs_updating = true;
+
+        // Positive X
+        if (block.x == World.CHUNK_SIZE - 1)
+            Chunks[new Vector2Int(chunk.x + 1, chunk.y)].needs_updating = true;
+        // Negative X
+        if (block.x == 0)
+            Chunks[new Vector2Int(chunk.x - 1, chunk.y)].needs_updating = true;
+        // Positive Z
+        if (block.z == World.CHUNK_SIZE - 1)
+            Chunks[new Vector2Int(chunk.x, chunk.y + 1)].needs_updating = true;
+        // Negative Z
+        if (block.z == 0)
+            Chunks[new Vector2Int(chunk.x, chunk.y - 1)].needs_updating = true;
     }
 }
