@@ -8,7 +8,8 @@ using System.Collections.Concurrent;
 
 public class ChunkManager
 {
-    public readonly ConcurrentDictionary<Vector2Int, Chunk> Chunks = new ConcurrentDictionary<Vector2Int, Chunk>();
+    public ConcurrentDictionary<Vector2Int, Chunk> Chunks = new ConcurrentDictionary<Vector2Int, Chunk>();
+    public ConcurrentDictionary<Vector2Int, Chunk> Modified_Chunks = new ConcurrentDictionary<Vector2Int, Chunk>();
     public HashSet<Vector2Int> ActiveChunks = new HashSet<Vector2Int>();
     public ConcurrentDictionary<Vector2Int, GameObject> Chunk_GameObjects = new ConcurrentDictionary<Vector2Int, GameObject>();
     public ConcurrentDictionary<Vector2Int, GameObject> Ocean_Tiles = new ConcurrentDictionary<Vector2Int, GameObject>();
@@ -180,5 +181,21 @@ public class ChunkManager
         Chunk _chunk = new Chunk(chunk_pos);
 
         Chunks[new Vector2Int(chunk_pos.x, chunk_pos.y)] = _chunk;
+    }
+
+    public void SetBlock(int _type, Vector2Int chunk, Vector3Int block)
+    {
+        // If first modification in this chunk, add neew dictionary entry
+        if(!Modified_Chunks.ContainsKey(chunk))
+        {
+            Chunk new_chunk = new Chunk(chunk, false);
+            Modified_Chunks[chunk] = new_chunk;
+        }
+
+        // Add new blockwd
+        Modified_Chunks[chunk].blocks[block.x, block.y, block.z] = new Block(_type, new Vector3(block.x, block.y, block.z));
+
+        // Set flags    TODO: Set flags on adjacent chunks if edge block modified
+        Chunks[chunk].needs_updating = true;
     }
 }

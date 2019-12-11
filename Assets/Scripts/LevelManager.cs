@@ -11,6 +11,10 @@ public class LevelManager : MonoBehaviour
     /// Awake is called when the script instance is being loaded.
     void Awake()
     {
+        // Create managers
+        Chunk_Manager = new ChunkManager();
+        world = new World(this);
+
         // This instantiates the shared block material so other threads can access it 
         // (As loading must be carried out in main thread)
         Material block_mat = TextureManager.Block_Material;
@@ -19,9 +23,7 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-        // Create managers
-        Chunk_Manager = new ChunkManager();
-        world = new World();
+        
     }
 
     // Update is called once per frame

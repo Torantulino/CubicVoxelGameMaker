@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody player_rigidbody;
 
+    private LevelManager level_manager;
+    private ChunkManager chunk_manager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +22,8 @@ public class PlayerController : MonoBehaviour
         //Screen_Overlay.GetComponent<MeshRenderer>().material.mainTextureScale =
         new Vector2(2.0f, World.SEA_LEVEL);
 
-
+        level_manager = FindObjectOfType<LevelManager>();
+        chunk_manager = level_manager.Chunk_Manager;
     }
 
     // Update is called once per frame
@@ -54,14 +58,25 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(ray, out hit_data, Config.PLAYER_REACH, LayerMask.GetMask("Blocks")))
             {
 
-                // Get block position
-                Vector3 normal = hit_data.normal;
-                Vector3 point = hit_data.point;
+                // Get position of hit block
+                Vector3 hit_block_pos = GetHitBlock(hit_data.normal, hit_data.point);
 
-                Vector3 hit_block_pos = GetHitBlock(normal, point);
+                // Round to get hit chunk
+                Vector2Int hit_chunk
+                    = new Vector2Int(Mathf.FloorToInt(hit_block_pos.x / World.CHUNK_SIZE),
+                                  Mathf.FloorToInt(hit_block_pos.z / World.CHUNK_SIZE));
 
-                
-                Debug.Log("Hit block pos: " + hit_block_pos);
+                // Round towards 0 by employing c#'s casting behaviour
+                //Vector3Int hit_block = new Vector3Int( (int)(hit_block_pos.x / World.CHUNK_SIZE), (int)(hit_block_pos.y / World.CHUNK_SIZE), (int)(hit_block_pos.z / World.CHUNK_SIZE) );
+                Vector2 chunk_pos = hit_chunk * World.CHUNK_SIZE;
+
+                Vector3Int hit_block = new Vector3Int( Mathf.FloorToInt(hit_block_pos.x - chunk_pos.x), Mathf.FloorToInt(hit_block_pos.y), Mathf.FloorToInt(hit_block_pos.z - chunk_pos.y));
+
+                chunk_manager.SetBlock((int) BlockInfo.BlockType.Air, hit_chunk, hit_block);
+
+                Debug.Log("Hit block pos: " + hit_block_pos + " In chunk: " + hit_chunk);
+
+
             }
         }
 
