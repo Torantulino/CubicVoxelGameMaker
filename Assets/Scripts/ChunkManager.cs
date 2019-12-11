@@ -119,9 +119,34 @@ public class ChunkManager
                     // Else if tile isn't loaded
                     else if (Vector2.Distance(actual_player_position, _tile_pos) < ((float)(World.SEA_RENDER_DISTANCE)))
                     {
+
+                        // Create Tile
+                        // Create Gameobject
+                        GameObject sea_tile_object = new GameObject("Sea_Tile");
+
+                        // Add Components
+                        MeshRenderer mesh_renderer = sea_tile_object.AddComponent<MeshRenderer>();
+                        MeshFilter mesh_filter = sea_tile_object.AddComponent<MeshFilter>();
+
+                        Mesh sea_mesh = new Mesh();
+                        BlockFace temp = new BlockFace(-1, Vector3.up);
+
+                        sea_mesh.vertices = new Vector3[4]
+                        {
+                            new Vector3(-0.5f, 1.0f, -0.5f), //2
+                            new Vector3(0.5f, 1.0f, -0.5f), //3
+                            new Vector3(0.5f, 1.0f, 0.5f),  //7
+                            new Vector3(-0.5f, 1.0f, 0.5f) //6
+                        };
+                        sea_mesh.triangles = temp.Triangles;
+                        sea_mesh.SetUVs(0, temp.UVs);
+                        sea_mesh.normals = temp.Normals;
+
+                        mesh_filter.mesh = sea_mesh;
+
                         // Load Ocean Tiles
-                        Ocean_Tiles[_tile_pos] = GameObject.CreatePrimitive(PrimitiveType.Plane);
-                        Ocean_Tiles[_tile_pos].transform.localScale = new Vector3(World.SEA_TILE_SIZE / 10.0f, 1.0f, World.SEA_TILE_SIZE / 10.0f);
+                        Ocean_Tiles[_tile_pos] = sea_tile_object;
+                        Ocean_Tiles[_tile_pos].transform.localScale = new Vector3(World.SEA_TILE_SIZE, 1.0f, World.SEA_TILE_SIZE);
                         Ocean_Tiles[_tile_pos].GetComponent<MeshRenderer>().material = TextureManager.Sea_Material;
                     }
 
@@ -135,25 +160,7 @@ public class ChunkManager
             }
 
 
-            // Create Tile
 
-            // // Create Gameobject
-            // GameObject sea_tile_object = new GameObject("Sea_Tile");
-
-            // // Add Components
-            // MeshRenderer mesh_renderer = sea_tile_object.AddComponent<MeshRenderer>();
-            // MeshFilter mesh_filter = sea_tile_object.AddComponent<MeshFilter>();
-
-            // Mesh sea_mesh = new Mesh();
-            // BlockFace temp = new BlockFace(-1, Vector3.up);
-
-            // sea_mesh.vertices = temp.Vertices;
-            // sea_mesh.triangles = temp.Triangles;
-            // sea_mesh.SetUVs(0, temp.UVs);
-            // sea_mesh.normals = temp.Normals;
-
-
-            // mesh_filter.mesh = sea_mesh;
 
 
         }
