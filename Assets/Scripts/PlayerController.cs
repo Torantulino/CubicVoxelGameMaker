@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public GameObject Screen_Overlay;
+    public GameObject Head;
     private bool touching_ground = true;    //TODO: Implement
     private int jumps_remaining = 2;
 
@@ -24,6 +25,12 @@ public class PlayerController : MonoBehaviour
 
         level_manager = FindObjectOfType<LevelManager>();
         chunk_manager = level_manager.Chunk_Manager;
+
+        // Find head
+        Head = GameObject.Find("Head");
+
+        // Lock cursor
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
@@ -33,18 +40,29 @@ public class PlayerController : MonoBehaviour
         PlayerControlAndResponse();
         //SimulateCameraEffects();      //TODO: MOVE TO CAMERA EFFECTS SPECIFIC CLASS ON MAIN CAMERA
         player_rigidbody = GetComponent<Rigidbody>();
+
+        // UnLock cursor
+        if(Input.GetKey(KeyCode.Escape))
+            Cursor.lockState = CursorLockMode.None;
     }
 
     private void PlayerControlAndResponse()
     {
         // Head Movement
-        //TODO: Could Lerp here for smoothness? Optional?
-        float new_rotation_x = transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * Config.LOOK_SENSITIVITY;
-        float new_rotation_y = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * Config.LOOK_SENSITIVITY;
-        transform.localEulerAngles = new Vector3(new_rotation_x, new_rotation_y, 0.0f);
+        //TODO: Could Lerp here for smoothness? Optionally?
+        float new_rotation_x = Head.transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * Config.LOOK_SENSITIVITY;
+        float new_rotation_y = Head.transform.localEulerAngles.y + Input.GetAxis("Mouse X") * Config.LOOK_SENSITIVITY;
+        Head.transform.localEulerAngles = new Vector3(new_rotation_x, new_rotation_y, 0.0f);
+
+        // // If not holding freelook key, rotate body with head around y axis
+        if(!Input.GetKey(Config.FREE_HEAD))
+        {
+            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y + Head.transform.localEulerAngles.y, 0.0f);
+            Head.transform.localEulerAngles = new Vector3(Head.transform.localEulerAngles.x, 0.0f, 0.0f);
+        }
+
 
         // Block Breaking / Placing
-        // Left Click
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
             // Debug Ray
