@@ -5,7 +5,7 @@ using System.Linq;
 
 public class TextureManager
 {
-    public static int TEXTURE_SIZE_PX = 16;
+    public static int TEXTURE_SIZE_PX = 32;
 
     private Texture2D[] block_textures;
     private static Texture2DArray texture_array;

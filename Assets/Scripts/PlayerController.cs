@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody player_rigidbody;
     private LevelManager level_manager;
     private ChunkManager chunk_manager;
-    private BlockInfo.BlockType brush = BlockInfo.BlockType.Light_Stone;
+    private BlockInfo.BlockType brush = BlockInfo.BlockType.Prototype_A;
     private float time_of_last_paint = 0.0f;
     bool swimming = false;
     float last_jump_time;
