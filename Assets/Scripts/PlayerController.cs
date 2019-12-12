@@ -100,7 +100,16 @@ public class PlayerController : MonoBehaviour
         // Move Forwards
         if (Input.GetKey(Config.MOVE_FORWARDS))
         {
-            player_rigidbody.position = transform.position + (transform.forward * Config.MOVEMENT_SPEED * Time.deltaTime);
+            if(Input.GetKey(Config.SPRINT) && !swimming)
+            {
+                Camera.main.fieldOfView = Config.FOV + 10.0f;
+                player_rigidbody.position = transform.position + (transform.forward * Config.SPRINT_SPEED * Time.deltaTime);
+            }
+            else
+            {
+                Camera.main.fieldOfView = Config.FOV;
+                player_rigidbody.position = transform.position + (transform.forward * Config.MOVEMENT_SPEED * Time.deltaTime);
+            }
         }
         // Move Left
         if (Input.GetKey(Config.MOVE_LEFT))

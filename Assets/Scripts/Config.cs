@@ -20,16 +20,17 @@ public class Config : MonoBehaviour
 
     // GAME DEFAULTS
     public static float MOVEMENT_SPEED = 5.0f;
+    public static float SPRINT_SPEED = 8.0f;
     public static float JUMP_POWER = 9.0f;
     public static float STEP_HEIGHT = 0.5f; // TODO: IMPLEMENT
     public static float PLAYER_REACH = 10.0f;
     public static float GRAVITY = -25.0f;
     public static float PLAYER_HEIGHT = 1.8f;   //TODO: APPLY TO PLAYER BODY
-    public static float MAX_WATER_VELOCITY = 5.0f;
+    public static float MAX_WATER_VELOCITY = 3.0f;
     public static float JUMP_INTERVAL = 0.5f;
 
     // GRAPHCS SETTINGS
-    public static int FOV;
+    public static int FOV = 80;
 
     // Start is called before the first frame update
     void Start()
