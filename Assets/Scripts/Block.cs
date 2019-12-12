@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Block
 {
     public int type = (int)BlockInfo.BlockType.Air;
@@ -16,8 +17,8 @@ public class Block
         type = _type;
         hitboxEnabled = _hitboxEnabled;
         Position = _pos;
-        
-        if(_type == (int)BlockInfo.BlockType.Air)
+
+        if (_type == (int)BlockInfo.BlockType.Air)
         {
             hitboxEnabled = false;
             return;

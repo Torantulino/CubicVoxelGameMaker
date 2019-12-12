@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[System.Serializable]
 public class Chunk
 {
     public bool has_loaded = false;
     public bool needs_updating = true;
     public bool unload = false;
     public Vector2Int Position;
-
     public Block[,,] blocks =
         new Block[World.CHUNK_SIZE, World.WORLD_HEIGHT, World.CHUNK_SIZE];
 
@@ -81,4 +82,5 @@ public class Chunk
         //TODO: Surely this is obselete if within constructor
         has_loaded = true;
     }
+
 }

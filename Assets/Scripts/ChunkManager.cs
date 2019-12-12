@@ -14,6 +14,23 @@ public class ChunkManager
     public ConcurrentDictionary<Vector2Int, GameObject> Chunk_GameObjects = new ConcurrentDictionary<Vector2Int, GameObject>();
     public ConcurrentDictionary<Vector2Int, GameObject> Ocean_Tiles = new ConcurrentDictionary<Vector2Int, GameObject>();
 
+    // Load previous game
+    public ChunkManager(SaveData _save_data)
+    {
+        //Chunks = _save_data.chunks;
+        for (int i = 0; i < _save_data.Keys.Count; i++)
+        {
+            //Vector2Int key = new Vector2Int(_save_data.Keys[i].x, _save_data.Keys[i].y);
+            Modified_Chunks[_save_data.Keys[i]] = _save_data.Values[i];
+        }
+        //Modified_Chunks = _save_data.modified_chunks;
+    }
+
+    public ChunkManager()
+    {
+
+    }
+    
     // Loads and Unloads chunks as needed
     public void UpdateChunks()
     {

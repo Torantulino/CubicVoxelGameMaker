@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[System.Serializable]
 public class BlockFace
 {
     public bool Render = true;    
