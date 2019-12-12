@@ -16,6 +16,7 @@ public class Config : MonoBehaviour
     public static KeyCode JUMP = KeyCode.Space;
     public static KeyCode SPRINT = KeyCode.LeftShift;
     public static KeyCode FREE_HEAD = KeyCode.LeftAlt;
+    public static KeyCode PIPETTE = KeyCode.F;
 
     // GAME DEFAULTS
     public static float MOVEMENT_SPEED = 5.0f;

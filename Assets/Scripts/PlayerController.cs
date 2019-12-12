@@ -156,8 +156,8 @@ public class PlayerController : MonoBehaviour
             head.transform.localEulerAngles = new Vector3(head.transform.localEulerAngles.x, 0.0f, 0.0f);
         }
 
-        // Block Breaking / Placing
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButton(2))
+        // Block Manipulation
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(Config.PIPETTE) || Input.GetMouseButton(2))
         {
             if (Input.GetMouseButton(2))
             {
@@ -252,8 +252,10 @@ public class PlayerController : MonoBehaviour
                 else if (Input.GetMouseButtonDown(0))
                     chunk_manager.SetBlock((int)BlockInfo.BlockType.Air, hit_chunk, hit_block);
                 // Paint
-                else
+                else if (Input.GetMouseButton(2))
                     chunk_manager.SetBlock((int)brush, hit_chunk, hit_block);
+                else if (Input.GetKeyDown(Config.PIPETTE))
+                    brush = (BlockInfo.BlockType)chunk_manager.Chunks[hit_chunk].blocks[hit_block.x, hit_block.y, hit_block.z].type;
             }
         }
 
