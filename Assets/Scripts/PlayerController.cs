@@ -9,15 +9,15 @@ public class PlayerController : MonoBehaviour
     public GameObject body;
     private bool touching_ground = true;
     private int jumps_remaining = 2;
-
     private Rigidbody player_rigidbody;
-
     private LevelManager level_manager;
     private ChunkManager chunk_manager;
+    private BlockInfo.BlockType brush = BlockInfo.BlockType.Light_Stone;
+    private float time_of_last_paint = 0.0f;
     bool swimming = false;
     float last_jump_time;
-
     bool start_physics = false;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -157,8 +157,16 @@ public class PlayerController : MonoBehaviour
         }
 
         // Block Breaking / Placing
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButton(2))
         {
+            if (Input.GetMouseButton(2))
+            {
+                if(Time.realtimeSinceStartup - time_of_last_paint < 0.1f)
+                    return;
+                else
+                    time_of_last_paint = Time.realtimeSinceStartup;
+            }
+
             // Debug Ray
             Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * Config.PLAYER_REACH, Color.magenta, 1.0f);
 
@@ -236,13 +244,16 @@ public class PlayerController : MonoBehaviour
                     Bounds new_block_bounds = new Bounds(hit_block_pos + hit_data.normal, new Vector3(1.0f, 1.0f, 1.0f));
                     if (!body.GetComponent<BoxCollider>().bounds.Intersects(new_block_bounds))
                         // Place block
-                        chunk_manager.SetBlock((int)BlockInfo.BlockType.Light_Stone, new_chunk_pos, new_block_pos);
+                        chunk_manager.SetBlock((int)brush, new_chunk_pos, new_block_pos);
                     else
                         Debug.Log("PLAYER BLOCKING PLACEMENT!");
                 }
                 // Block Breaking (Left Click)
-                else
+                else if (Input.GetMouseButtonDown(0))
                     chunk_manager.SetBlock((int)BlockInfo.BlockType.Air, hit_chunk, hit_block);
+                // Paint
+                else
+                    chunk_manager.SetBlock((int)brush, hit_chunk, hit_block);
             }
         }
 
