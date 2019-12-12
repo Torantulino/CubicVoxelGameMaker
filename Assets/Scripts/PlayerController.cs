@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     bool swimming = false;
     float last_jump_time;
 
+    bool start_physics = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +39,8 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         player_rigidbody = GetComponent<Rigidbody>();
+
+        Physics.gravity = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -54,16 +58,20 @@ public class PlayerController : MonoBehaviour
         // Check if under water-line
         swimming = transform.position.y - Config.PLAYER_HEIGHT / 2.0f < World.SEA_LEVEL + Noise.GetSeaOffset().y;
 
-
-        if (swimming)
+        if(start_physics || level_manager.world.loops > 1)
         {
-            if (Mathf.Abs(player_rigidbody.velocity.y) > Config.MAX_WATER_VELOCITY)
-                player_rigidbody.velocity = new Vector3(player_rigidbody.velocity.x, Mathf.Sign(player_rigidbody.velocity.y) * Config.MAX_WATER_VELOCITY, player_rigidbody.velocity.z);
+            start_physics = true;
 
-            Physics.gravity = new Vector3(0.0f, Config.GRAVITY / 10.0f, 0.0f);
+            if (swimming)
+            {
+                if (Mathf.Abs(player_rigidbody.velocity.y) > Config.MAX_WATER_VELOCITY)
+                    player_rigidbody.velocity = new Vector3(player_rigidbody.velocity.x, Mathf.Sign(player_rigidbody.velocity.y) * Config.MAX_WATER_VELOCITY, player_rigidbody.velocity.z);
+
+                Physics.gravity = new Vector3(0.0f, Config.GRAVITY / 10.0f, 0.0f);
+            }
+            else
+                Physics.gravity = new Vector3(0.0f, Config.GRAVITY, 0.0f);
         }
-        else
-            Physics.gravity = new Vector3(0.0f, Config.GRAVITY, 0.0f);
     }
 
     void FixedUpdate()
