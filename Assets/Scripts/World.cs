@@ -15,7 +15,6 @@ public class World
     public static int SEA_RENDER_DISTANCE = 1;
     public static int SEA_TILE_SIZE = 612;
     public static bool ISLANDS = true;
-    public static System.Random random = new System.Random(); //Can take seed
     ChunkManager chunk_manager;
     LevelManager level_manager;
 
