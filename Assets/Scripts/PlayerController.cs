@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     bool swimming = false;
     float last_jump_time;
     bool start_physics = false;
+    float start_time;
 
 
     // Start is called before the first frame update
@@ -41,6 +42,7 @@ public class PlayerController : MonoBehaviour
         player_rigidbody = GetComponent<Rigidbody>();
 
         Physics.gravity = Vector3.zero;
+        start_time = Time.realtimeSinceStartup;
     }
 
     // Update is called once per frame
@@ -58,7 +60,9 @@ public class PlayerController : MonoBehaviour
         // Check if under water-line
         swimming = transform.position.y - Config.PLAYER_HEIGHT / 2.0f < World.SEA_LEVEL + Noise.GetSeaOffset().y;
 
-        if (start_physics || level_manager.world.loops > 90)
+        // Wait for world to load before starting physics
+        // This is crude but works, ideally would check if current chunk below player has loaded.
+        if (start_physics || Time.realtimeSinceStartup - start_time > 2.0f)
         {
             start_physics = true;
 

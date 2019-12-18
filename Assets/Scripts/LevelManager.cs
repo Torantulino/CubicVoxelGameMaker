@@ -22,8 +22,9 @@ public class LevelManager : MonoBehaviour
         SaveData save_data = LoadGame("test_world14");
         if (save_data != null)
         {
+            Physics.gravity = Vector3.zero;
             Chunk_Manager = new ChunkManager(save_data);
-            player.transform.position = save_data.Player_Position + Vector3.up * 0.05f;
+            player.transform.position = save_data.Player_Position + Vector3.up * 0.15f;
         }
         else
             Chunk_Manager = new ChunkManager();
@@ -149,19 +150,19 @@ public class Vector2IntSerializationSurrogate : ISerializationSurrogate
     public void GetObjectData(System.Object obj, SerializationInfo info, StreamingContext context)
     {
 
-        Vector2Int v2 = (Vector2Int)obj;
-        info.AddValue("x", v2.x);
-        info.AddValue("y", v2.y);
+        Vector2Int vector2 = (Vector2Int)obj;
+        info.AddValue("x", vector2.x);
+        info.AddValue("y", vector2.y);
     }
 
     // Method called to deserialize a Vector3 object
     public System.Object SetObjectData(System.Object obj, SerializationInfo info,
                                        StreamingContext context, ISurrogateSelector selector)
     {
-        Vector2Int v2 = (Vector2Int)obj;
-        v2.x = (int)info.GetValue("x", typeof(int));
-        v2.y = (int)info.GetValue("y", typeof(int));
-        obj = v2;
+        Vector2Int vector2 = (Vector2Int)obj;
+        vector2.x = (int)info.GetValue("x", typeof(int));
+        vector2.y = (int)info.GetValue("y", typeof(int));
+        obj = vector2;
         return obj;
     }
 }
@@ -173,10 +174,10 @@ public class Vector3SerializationSurrogate : ISerializationSurrogate
     public void GetObjectData(System.Object obj, SerializationInfo info, StreamingContext context)
     {
 
-        Vector3 v3 = (Vector3)obj;
-        info.AddValue("x", v3.x);
-        info.AddValue("y", v3.y);
-        info.AddValue("z", v3.z);
+        Vector3 vector3 = (Vector3)obj;
+        info.AddValue("x", vector3.x);
+        info.AddValue("y", vector3.y);
+        info.AddValue("z", vector3.z);
     }
 
     // Method called to deserialize a Vector3 object
@@ -184,11 +185,11 @@ public class Vector3SerializationSurrogate : ISerializationSurrogate
                                        StreamingContext context, ISurrogateSelector selector)
     {
 
-        Vector3 v3 = (Vector3)obj;
-        v3.x = (float)info.GetValue("x", typeof(float));
-        v3.y = (float)info.GetValue("y", typeof(float));
-        v3.z = (float)info.GetValue("z", typeof(float));
-        obj = v3;
+        Vector3 vector3 = (Vector3)obj;
+        vector3.x = (float)info.GetValue("x", typeof(float));
+        vector3.y = (float)info.GetValue("y", typeof(float));
+        vector3.z = (float)info.GetValue("z", typeof(float));
+        obj = vector3;
         return obj;
     }
 }
