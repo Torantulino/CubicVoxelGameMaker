@@ -17,16 +17,16 @@ public class PlayerController : MonoBehaviour
     bool swimming = false;
     float last_jump_time;
     bool start_physics = false;
-    
+
 
     // Start is called before the first frame update
     void Start()
     {
-        //Screen_Overlay = transform.GetChild(0).gameObject;
-        //Screen_Overlay.transform.gameObject.transform.localScale =
-        new Vector3(2.0f, World.SEA_LEVEL, 1.0f);
-        //Screen_Overlay.GetComponent<MeshRenderer>().material.mainTextureScale =
-        new Vector2(2.0f, World.SEA_LEVEL);
+        Screen_Overlay = GameObject.Find("Overlay");
+        Screen_Overlay.transform.gameObject.transform.localScale =
+            new Vector3(2.0f, World.SEA_LEVEL, 1.0f);
+        Screen_Overlay.GetComponent<MeshRenderer>().material.mainTextureScale =
+            new Vector2(2.0f, World.SEA_LEVEL);
 
         level_manager = FindObjectOfType<LevelManager>();
         chunk_manager = level_manager.Chunk_Manager;
@@ -48,17 +48,17 @@ public class PlayerController : MonoBehaviour
     {
 
         PlayerControlAndResponse();
-        //SimulateCameraEffects();      //TODO: MOVE TO CAMERA EFFECTS SPECIFIC CLASS ON MAIN CAMERA
+        SimulateCameraEffects();      //TODO: MOVE TO CAMERA EFFECTS SPECIFIC CLASS ON MAIN CAMERA
 
 
-        // UnLock cursor
+        // UnLock cursor (DEBUG)
         if (Input.GetKey(KeyCode.Escape))
             Cursor.lockState = CursorLockMode.None;
 
         // Check if under water-line
         swimming = transform.position.y - Config.PLAYER_HEIGHT / 2.0f < World.SEA_LEVEL + Noise.GetSeaOffset().y;
 
-        if(start_physics || level_manager.world.loops > 1)
+        if (start_physics || level_manager.world.loops > 90)
         {
             start_physics = true;
 
@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
         // Move Forwards
         if (Input.GetKey(Config.MOVE_FORWARDS))
         {
-            if(Input.GetKey(Config.SPRINT) && !swimming)
+            if (Input.GetKey(Config.SPRINT) && !swimming)
             {
                 Camera.main.fieldOfView = Config.FOV + 10.0f;
                 player_rigidbody.position = transform.position + (transform.forward * Config.SPRINT_SPEED * Time.deltaTime);
@@ -170,7 +170,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetMouseButton(2))
             {
-                if(Time.realtimeSinceStartup - time_of_last_paint < 0.1f)
+                if (Time.realtimeSinceStartup - time_of_last_paint < 0.1f)
                     return;
                 else
                     time_of_last_paint = Time.realtimeSinceStartup;
@@ -308,20 +308,20 @@ public class PlayerController : MonoBehaviour
         Vector3 sea_offset = Noise.GetSeaOffset();
 
         // Water in Eyes
-        if (Camera.main.transform.position.y <= World.SEA_LEVEL - sea_offset.y)
+        if (Camera.main.transform.position.y <= World.SEA_LEVEL + sea_offset.y + 1.0f)
         {
             Screen_Overlay.SetActive(true);
 
 
             Vector3 camera_offset = Camera.main.nearClipPlane * (1.84f * Camera.main.transform.forward);
 
-            // Vector3 sea_position = new Vector3(
-            //         transform.position.x,
-            //         World.SEA_LEVEL + sea_offset.y, 
-            //         transform.position.z) +
-            //         new Vector3(camera_offset.x, 0.0f, camera_offset.z);
+            Vector3 sea_position = new Vector3(
+                    transform.position.x,
+                    World.SEA_LEVEL + sea_offset.y,
+                    transform.position.z) +
+                    new Vector3(camera_offset.x, 0.0f, camera_offset.z);
 
-            //Vector3 sea_screen_pos = Camera.main.WorldToScreenPoint(sea_position);
+            Vector3 sea_screen_pos = Camera.main.WorldToScreenPoint(sea_position);
 
 
             Screen_Overlay.transform.localPosition = new Vector3(
