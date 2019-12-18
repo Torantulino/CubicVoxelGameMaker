@@ -79,7 +79,7 @@ public class TextureManager
 
         // Settings
         _texture_array.wrapMode = TextureWrapMode.Clamp;
-        _texture_array.filterMode = FilterMode.Bilinear;
+        _texture_array.filterMode = FilterMode.Point;
 
         // Iterate over textures adding pixel data to Texture Array
         for (int i = 0; i < block_textures.Length; i++)
