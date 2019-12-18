@@ -60,7 +60,8 @@ public class ChunkManager
                 List<Vector2Int> to_remove = new List<Vector2Int>();
                 foreach (Vector2Int _chunk_pos in Chunks.Keys)
                 {
-                    if (Vector2.Distance(actual_player_position, _chunk_pos) > ((float)(World.RENDER_DISTANCE)) + 1.33f)
+                    if (Vector2.Distance(actual_player_position, _chunk_pos) > 
+                        ((float)(World.RENDER_DISTANCE)) + 1.33f)
                     {
                         Chunks[_chunk_pos].unload = true;
                         Chunks[_chunk_pos].needs_updating = true;
@@ -84,10 +85,11 @@ public class ChunkManager
                     Vector2Int _chunk_pos = new Vector2Int(x, z);
 
                     // Disregard corner chunks outside true render distance
-                    if (Vector2.Distance(actual_player_position, _chunk_pos) > ((float)World.RENDER_DISTANCE))
+                    if (Vector2.Distance(actual_player_position, _chunk_pos) > 
+                        ((float)World.RENDER_DISTANCE))
                         continue;
 
-                    // Check Hashmap to ensure currently loading chunks aren't recalled
+                    // Check Hashmap to ensure chunks currenly loading on other threads aren't loaded twice
                     if (!ActiveChunks.Contains(_chunk_pos))
                     {
                         ActiveChunks.Add(_chunk_pos);
@@ -209,7 +211,7 @@ public class ChunkManager
 
     public void SetBlock(int _type, Vector2Int chunk, Vector3Int block)
     {
-        // If first modification in this chunk, add neew dictionary entry
+        // If first modification in this chunk, add new dictionary entry
         if (!Modified_Chunks.ContainsKey(chunk))
         {
             Chunk new_chunk = new Chunk(chunk, false);
