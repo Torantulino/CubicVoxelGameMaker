@@ -15,7 +15,8 @@ public class World
     public static int SEA_RENDER_DISTANCE = 1;
     public static int SEA_TILE_SIZE = 612;
     public static bool ISLANDS = true;
-    public static System.Random random = new System.Random(); //Can take seed
+
+    public static System.Random random = new System.Random(1); //TODO: Add seed to save data when implementing multiple world saving
     ChunkManager chunk_manager;
     LevelManager level_manager;
     public int loops = 0;
@@ -108,6 +109,7 @@ public class World
                         // If this block isn't at the edge of the chunk
                         // And neither this or the next block is air
                         // Don't render the face facing the next block
+                        // TODO: Can face normals be implemented here to shrink code?
                         // -------------------------------------------
                         Block this_block = _chunk.blocks[x, y, z];
 

@@ -30,17 +30,5 @@ public class Config : MonoBehaviour
     public static float JUMP_INTERVAL = 0.5f;
 
     // GRAPHCS SETTINGS
-    public static int FOV = 80;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    public static int FOV = 60;
 }

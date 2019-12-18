@@ -35,9 +35,6 @@ public class Chunk
                     // Above hieght-map
                     if (y > height)
                     {
-                        // // Water
-                        // if (y < World.SEA_LEVEL)
-                        //     block_type = (int)BlockInfo.BlockType.Water;
                         //Air
                         block_type = (int)BlockInfo.BlockType.Air;
                     }
@@ -47,6 +44,7 @@ public class Chunk
                         // Snowy Grass
                         if (y >= World.WORLD_HEIGHT - 3.0f / 8.0f * World.WORLD_HEIGHT)
                             block_type = (int)BlockInfo.BlockType.Snow;
+                        // Dry Grass
                         else if (y > World.WORLD_HEIGHT - 4.0f / 8.0f * World.WORLD_HEIGHT)
                             block_type = (int)BlockInfo.BlockType.Dry_Grass;
                         // Sand
