@@ -9,13 +9,13 @@ public class Block
     public BlockFace[] Faces = new BlockFace[6];
     public Vector3 Position;
 
-
     public Block(int _type, Vector3 _pos, bool _hitboxEnabled = true)
     {
         // Set properties
         type = _type;
         Position = _pos;
 
+        // Air requires no faces
         if (_type == (int)BlockInfo.BlockType.Air)
             return;
 

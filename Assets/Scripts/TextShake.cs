@@ -17,6 +17,7 @@ public class TextShake : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Simulate wacky main menu text sway
         transform.position = initial_pos + Noise.GetSeaOffset() * 100.0f;
         transform.eulerAngles = inital_rot + 100.0f * new Vector3 (Noise.GetSeaOffset().x, Noise.GetSeaOffset().y, Noise.GetSeaOffset().z);
     }

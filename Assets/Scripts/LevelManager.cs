@@ -14,7 +14,7 @@ public class LevelManager : MonoBehaviour
     public World world;
     private GameObject player;
 
-    /// Awake is called when the script instance is being loaded.
+    // Awake is called when the script instance is being loaded.
     void Awake()
     {
         player = GameObject.Find("Player");
@@ -36,23 +36,19 @@ public class LevelManager : MonoBehaviour
         Material block_mat = TextureManager.Block_Material;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
         world.UpdateWorld();
     }
 
+    // Save game on quit. In future specify user provided filename
     void OnApplicationQuit()
     {
         SaveGame("test_world14");
     }
 
+    // Saves the game with the specified filename
     private void SaveGame(string _filename)
     {
         string path = Application.persistentDataPath + "/" + _filename + ".dat";
@@ -67,7 +63,7 @@ public class LevelManager : MonoBehaviour
         BinaryFormatter binary_formatter = new BinaryFormatter();
         SurrogateSelector surrogate_selector = new SurrogateSelector();
 
-        // Custom selectors
+        // Custom serialisation surrogates
         Vector2IntSerializationSurrogate vector2i_selector = new Vector2IntSerializationSurrogate();
         Vector3SerializationSurrogate vector3_selector = new Vector3SerializationSurrogate();
 
@@ -86,6 +82,7 @@ public class LevelManager : MonoBehaviour
         file_stream.Close();
     }
 
+    // Loads the game with specifed filename
     private SaveData LoadGame(string _filename)
     {
         string path = Application.persistentDataPath + "/" + _filename + ".dat";
@@ -96,7 +93,7 @@ public class LevelManager : MonoBehaviour
             file_stream = File.OpenRead(path);
         else
         {
-            Debug.LogWarning("File not found");
+            Debug.LogWarning("Save file not found");
             return null;
         }
 
@@ -123,9 +120,9 @@ public class LevelManager : MonoBehaviour
         return loaded_data;
     }
 
-
 }
 
+// Serialisable class contraining level sava data
 [System.Serializable]
 public class SaveData
 {
@@ -143,10 +140,10 @@ public class SaveData
     }
 }
 
+// Serialisation surrogate for Vector2Int
 public class Vector2IntSerializationSurrogate : ISerializationSurrogate
 {
-
-    // Method called to serialize a Vector3 object
+    // How to Serialise Vector2Int
     public void GetObjectData(System.Object obj, SerializationInfo info, StreamingContext context)
     {
 
@@ -155,7 +152,7 @@ public class Vector2IntSerializationSurrogate : ISerializationSurrogate
         info.AddValue("y", vector2.y);
     }
 
-    // Method called to deserialize a Vector3 object
+    // How to Deserialise Vector2Int
     public System.Object SetObjectData(System.Object obj, SerializationInfo info,
                                        StreamingContext context, ISurrogateSelector selector)
     {
@@ -167,10 +164,10 @@ public class Vector2IntSerializationSurrogate : ISerializationSurrogate
     }
 }
 
+// Serialisation surrogate for Vector3s
 public class Vector3SerializationSurrogate : ISerializationSurrogate
 {
-
-    // Method called to serialize a Vector3 object
+    // How to Serialise Vector3
     public void GetObjectData(System.Object obj, SerializationInfo info, StreamingContext context)
     {
 
@@ -180,11 +177,10 @@ public class Vector3SerializationSurrogate : ISerializationSurrogate
         info.AddValue("z", vector3.z);
     }
 
-    // Method called to deserialize a Vector3 object
+    // How to Deserialise Vector3
     public System.Object SetObjectData(System.Object obj, SerializationInfo info,
                                        StreamingContext context, ISurrogateSelector selector)
     {
-
         Vector3 vector3 = (Vector3)obj;
         vector3.x = (float)info.GetValue("x", typeof(float));
         vector3.y = (float)info.GetValue("y", typeof(float));

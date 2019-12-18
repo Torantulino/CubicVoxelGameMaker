@@ -14,7 +14,7 @@ public class ChunkManager
     public ConcurrentDictionary<Vector2Int, GameObject> Chunk_GameObjects = new ConcurrentDictionary<Vector2Int, GameObject>();
     public ConcurrentDictionary<Vector2Int, GameObject> Ocean_Tiles = new ConcurrentDictionary<Vector2Int, GameObject>();
 
-    // Load previous game
+    // Create chunk manager from previous save data
     public ChunkManager(SaveData _save_data)
     {
         //Chunks = _save_data.chunks;
@@ -26,10 +26,8 @@ public class ChunkManager
         //Modified_Chunks = _save_data.modified_chunks;
     }
 
-    public ChunkManager()
-    {
-
-    }
+    // Create blank ChunkManager when starting new Game
+    public ChunkManager(){}
     
     // Loads and Unloads chunks as needed
     public void UpdateChunks()
@@ -51,10 +49,6 @@ public class ChunkManager
             int min_z = rounded_player_position.y - World.RENDER_DISTANCE;
             int max_z = rounded_player_position.y + World.RENDER_DISTANCE;
 
-            //TODO: REMOVE DEBUG METRICS
-            // int unloaded_chunks = 0;
-            // int loaded_chunks = 0;
-
             // Unload Chunks
             {
                 List<Vector2Int> to_remove = new List<Vector2Int>();
@@ -66,8 +60,6 @@ public class ChunkManager
                         Chunks[_chunk_pos].unload = true;
                         Chunks[_chunk_pos].needs_updating = true;
                         to_remove.Add(_chunk_pos);
-
-                        // unloaded_chunks++;
                     }
                 }
                 // Remove from collection
@@ -94,8 +86,6 @@ public class ChunkManager
                     {
                         ActiveChunks.Add(_chunk_pos);
                         LoadChunk(_chunk_pos);
-
-                        // loaded_chunks++;
                     }
                 }
             }
@@ -177,17 +167,10 @@ public class ChunkManager
                     }
                 }
             }
-
-
-
-
-
         }
-
-        // Debug.Log("Chunks Unloaded: " + unloaded_chunks + " | Chunks Loaded: " + loaded_chunks);
-        // Debug.Log("TOTAL: " + (unloaded_chunks + loaded_chunks));
     }
 
+    // Load / Generate Chunk at specified coordinates
     private void LoadChunk(Vector2Int _chunk_pos)
     {
         if (Chunks.ContainsKey(_chunk_pos))
@@ -202,6 +185,7 @@ public class ChunkManager
         }
     }
 
+    // Chunk Generation thread
     private void GenerateChunk(Vector2Int chunk_pos)
     {
         Chunk _chunk = new Chunk(chunk_pos);
@@ -209,6 +193,7 @@ public class ChunkManager
         Chunks[new Vector2Int(chunk_pos.x, chunk_pos.y)] = _chunk;
     }
 
+    // Replace the specified block, in the specified chunk, with the specified type
     public void SetBlock(int _type, Vector2Int chunk, Vector3Int block)
     {
         // If first modification in this chunk, add new dictionary entry

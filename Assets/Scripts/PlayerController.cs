@@ -40,7 +40,6 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         player_rigidbody = GetComponent<Rigidbody>();
-
         Physics.gravity = Vector3.zero;
         start_time = Time.realtimeSinceStartup;
     }
@@ -48,10 +47,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         PlayerControlAndResponse();
-        SimulateCameraEffects();      //TODO: MOVE TO CAMERA EFFECTS SPECIFIC CLASS ON MAIN CAMERA
-
+        SimulateCameraEffects();
 
         // UnLock cursor (DEBUG)
         if (Input.GetKey(KeyCode.Escape))
@@ -90,6 +87,7 @@ public class PlayerController : MonoBehaviour
         touching_ground = true;
     }
 
+    // Check if 'feet' are touching ground
     void OnTriggerExit(Collider other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Blocks"))
@@ -98,17 +96,20 @@ public class PlayerController : MonoBehaviour
         touching_ground = false;
     }
 
+    // Physics reliant player control (Called from fixed update)
     private void PlayerPhysicsControlAndResponse()
     {
         // Player Movement
         // Move Forwards
         if (Input.GetKey(Config.MOVE_FORWARDS))
         {
+            // Sprint
             if (Input.GetKey(Config.SPRINT) && !swimming)
             {
                 Camera.main.fieldOfView = Config.FOV + 10.0f;
                 player_rigidbody.position = transform.position + (transform.forward * Config.SPRINT_SPEED * Time.deltaTime);
             }
+            // Walk
             else
             {
                 Camera.main.fieldOfView = Config.FOV;
@@ -130,22 +131,23 @@ public class PlayerController : MonoBehaviour
         {
             player_rigidbody.position = transform.position + (-transform.forward * Config.MOVEMENT_SPEED * Time.deltaTime);
         }
-
         // Jump
         if (Input.GetKey(Config.JUMP) && (touching_ground || swimming) && Time.realtimeSinceStartup - last_jump_time > Config.JUMP_INTERVAL)
         {
+            // Jumps remaining could be used to implement double jump in future
             if (jumps_remaining > 0)
             {
                 Vector3 velocity = Vector3.zero;
                 velocity += Vector3.up * Config.JUMP_POWER;
                 player_rigidbody.velocity = velocity;
 
-                touching_ground = false;
-            }
-            last_jump_time = Time.realtimeSinceStartup;
+                // Record last jump time to limit jumping rate
+                last_jump_time = Time.realtimeSinceStartup;
+            } 
         }
     }
 
+    // Non Physics based player control.
     private void PlayerControlAndResponse()
     {
         // Head Movement
@@ -307,8 +309,11 @@ public class PlayerController : MonoBehaviour
 
         return hit_block_pos;
     }
+
+    // Simulate camera effects. In future move this to own class
     private void SimulateCameraEffects()
     {
+        // Get sea offset to allow water to move with the sea, and accurately track up the eyes when half submerged
         Vector3 sea_offset = Noise.GetSeaOffset();
 
         // Water in Eyes
@@ -327,7 +332,6 @@ public class PlayerController : MonoBehaviour
 
             Vector3 sea_screen_pos = Camera.main.WorldToScreenPoint(sea_position);
 
-
             Screen_Overlay.transform.localPosition = new Vector3(
                 0.0f,
 
@@ -335,8 +339,6 @@ public class PlayerController : MonoBehaviour
                 (transform.position.y + camera_offset.y) -
                 Screen_Overlay.transform.localScale.y / 2.0f,
                 0.84f);
-
-            //Test_Cube.transform.position = sea_position;
         }
         else
             Screen_Overlay.SetActive(false);

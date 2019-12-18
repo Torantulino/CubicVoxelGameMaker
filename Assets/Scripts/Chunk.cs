@@ -13,6 +13,8 @@ public class Chunk
     public Block[,,] blocks =
         new Block[World.CHUNK_SIZE, World.WORLD_HEIGHT, World.CHUNK_SIZE];
 
+    // Creates a new chunk.
+    // Generate landscape boolean enables chunk to be empty
     public Chunk(Vector2Int _position, bool generate_landscape = true)
     {
         // Set Properties
@@ -76,9 +78,6 @@ public class Chunk
                 }
             }
         }
-
-        //TODO: Surely this is obselete if within constructor
         has_loaded = true;
     }
-
 }

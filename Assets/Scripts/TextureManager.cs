@@ -63,7 +63,7 @@ public class TextureManager
     // to the GPU as a single object and uses a single drawcall
     private static Texture2DArray CreateTextureArray()
     {
-        // //Load textures
+        //Load textures
         Texture2D[] block_textures = Resources.LoadAll<Texture2D>("Textures/Blocks/Opaque");
 
         // Sort array based on numeric name prefix

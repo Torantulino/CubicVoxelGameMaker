@@ -102,7 +102,7 @@ public class BlockFace
             1, 3, 2
         };
 
-        //TODO: investiage
+        // Construct Normals
         Normals = new Vector3[4]
         {
             Vector3.back,
@@ -110,7 +110,7 @@ public class BlockFace
             Vector3.back,
             Vector3.back
         };
-
+        
         // Set UVs, with third coordinate indicating index within texture atlas
         UVs = new List<Vector3>
         {
